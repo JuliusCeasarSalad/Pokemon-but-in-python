@@ -4,3 +4,5 @@ current goals
 1. add all proper battle fuctionalaity
 2. add switching pokemons
 3. add more pokemon
+
+btw owen my discord handle is _cahaya
