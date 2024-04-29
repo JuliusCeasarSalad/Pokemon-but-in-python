@@ -1,0 +1,148 @@
+#a simple pokemon battler for python
+#for now its just two pokemon
+import tkinter as tk
+import random
+
+#all type advantages
+Typeadvantage = {
+    "normal": (("rock", 0.5), ("ghost", 0), ("steel", 0.5)),
+    "fire": (("fire", 0.5), ("water", 0.5), ("grass", 2), ("ice", 2), ("bug", 2), ("rock", 0.5), ("dragon", 0.5), ("steel", 2)),
+    "water": (("fire", 2), ("water", 0.5), ("grass", 0.5), ("ground", 2), ("rock", 2), ("dragon", 0.5)),
+    "grass": (("fire", 0.5), ("water", 2), ("grass", 0.5), ("poison", 0.5), ("ground", 2), ("flying", 0.5), ("bug", 0.5), ("rock", 2), ("dragon", 0.5), ("steel", 0.5)),
+    "electric": (("water", 2), ("grass", 0.5), ("electric", 0.5), ("ground", 0), ("flying", 2), ("dragon", 0.5)),
+    "ice": (("fire", 0.5), ("water", 0.5), ("grass", 2), ("ice", 0.5), ("ground", 2), ("flying", 2), ("dragon", 2), ("steel", 0.5)),
+    "fighting": (("normal", 2), ("ice", 2), ("poison", 0.5), ("flying", 0.5), ("psychic", 0.5), ("bug", 0.5), ("rock", 2), ("ghost", 0), ("dark", 2), ("steel", 2), ("fairy", 0.5)),
+    "poison": (("grass", 2), ("poison", 0.5), ("ground", 0.5), ("rock", 0.5), ("ghost", 0.5), ("steel", 0), ("fairy", 2)),
+    "ground": (("fire", 2), ("grass", 0.5), ("electric", 2), ("poison", 2), ("flying", 0), ("bug", 0.5), ("rock", 2), ("steel", 2)),
+    "flying": (("grass", 2), ("electric", 0.5), ("fighting", 2), ("bug", 2), ("rock", 0.5), ("steel", 0.5)),
+    "psychic": (("fighting", 2), ("poison", 2), ("psychic", 0.5), ("dark", 0), ("steel", 0.5)),
+    "bug": (("fire", 0.5), ("grass", 2), ("fighting", 0.5), ("poison", 0.5), ("flying", 0.5), ("psychic", 2), ("ghost", 0.5), ("dark", 2), ("steel", 0.5), ("fairy", 0.5)),
+    "rock": (("fire", 2), ("ice", 2), ("fighting", 0.5), ("ground", 0.5), ("flying", 2), ("bug", 2), ("steel", 0.5)),
+    "ghost": (("normal", 0), ("psychic", 2), ("ghost", 2), ("dark", 0.5)),
+    "dragon": (("dragon", 2), ("steel", 0.5), ("fairy", 0)),
+    "dark": (("fighting", 0.5), ("psychic", 2), ("ghost", 2), ("dark", 0.5), ("fairy", 0.5)),
+    "steel": (("fire", 0.5), ("water", 0.5), ("electric", 0.5), ("ice", 2), ("rock", 2), ("steel", 0.5), ("fairy", 2)),
+    "fairy": (("fire", 0.5), ("fighting", 2), ("poison", 0.5), ("dragon", 2), ("dark", 2), ("steel", 0.5)),
+    " ":()
+}
+
+#Calcuate type bonuses
+def calculateTypeBonus(attacker, defender):
+    "Calcuates the types bonuses between two pokémon. Returns the bonus"
+    #Type of attack
+    attackType = attacker.move1.type
+    
+    #Types of defending pokemon
+    defenderTypes = defender.type1, defender.type2
+
+    #Type bonus multiplier
+    bonus = 1
+
+    #Attack boosts
+    for modifier in Typeadvantage[attackType]:
+        if modifier[0] in defenderTypes: bonus *= modifier[1]
+
+    #Return the final boost
+    return bonus
+
+class Pokemon():
+    def __init__(self, type1, type2, hp, atk, deff, spatk, spdef, speed, name, move1, move2, move3, move4):
+        self.type1 = type1
+        self.type2 = type2
+        self.hp = (((2*hp + 31) * 100)/100) + 110
+        self.atk = atk
+        self.deff = deff
+        self.spatk = spatk
+        self.spdef = spdef
+        self.speed = speed
+        self.name = name
+        self.move1 = move1
+        self.move2 = move2
+        self.move3 = move3
+        self.move4 = move4
+
+def attack_(self, other):
+    "Attack another pokemon"
+    #Critical hit (1/24 chance)
+    critical = 1.5 if random.choice(f"{'0'*23}1") == "1" else 1
+    #Random effect
+    random_ = random.randint(85, 100) / 100
+    #STAB bonus
+    stab = 1.5 if self.move1.type in self.type1 else 1
+    #Type bonus
+    typeBonus = calculateTypeBonus(self, other)
+    #Calculate damage
+    other.hp -= round(((42 * self.move1.power * ((self.atk / other.deff))/2) / 50 + 2) * critical * random_ * stab * typeBonus)
+    
+    #Set health to zero if their health goes below zero
+    if other.hp <= 0: other.hp = 0
+    Update1HP()
+    Update2HP()
+
+class Attacks():
+    def __init__(self, type_, power, acuracy, pp, special):
+        self.type = type_
+        self.power = power
+        self.acuracy = acuracy
+        self.pp = pp
+        self.special = special
+
+Psystrike = Attacks("psychic", 100, 100, 16, True)
+Icebeam = Attacks("ice", 90, 100, 16, True)
+Fireblast = Attacks("fire", 110, 85, 8, True)
+Shadowball = Attacks("ghost", 80, 100, 24, True)
+Sludgewave = Attacks("posison", 95, 100, 16, True)
+Earthpower = Attacks("ground", 90, 100, 16, False)
+Thunderbolt = Attacks("electric", 90, 100, 24, True)
+
+Showdown = tk.Tk()
+Showdown.title("Pykemon")
+
+Mewtwo = Pokemon("psychic", " ", 109, 110, 90, 154, 90, 130, "Mewtwo", Psystrike, Icebeam, Fireblast, Shadowball)
+Nidoking = Pokemon("poison","ground", 81, 102, 77, 85, 75, 85, "Nidoking", Sludgewave, Earthpower, Fireblast, Thunderbolt)
+
+actingpokemon1 = Mewtwo
+actingpokemon2 = Nidoking
+
+Hp1 = tk.IntVar()
+Hp1.set(Mewtwo.hp)
+
+Hp2 = tk.IntVar()
+Hp2.set(Nidoking.hp)
+
+def Update1HP():
+    "Changes the displayed HP value of the first pokemon"
+    Hpdisplay1.config(text=f"{Mewtwo.hp}")
+        
+def Update2HP():
+    "Changes the displayed HP value of the second pokemon"
+    Hpdisplay2.config(text=f"{Nidoking.hp}")
+
+Hpdisplay1 = tk.Label(Showdown, text=f"{Mewtwo.hp}")
+Hpdisplay1.grid()
+
+Hpdisplay2 = tk.Label(Showdown, text=f"{Nidoking.hp}")
+Hpdisplay2.grid()
+
+Pokemondisplay1 = tk.Label(Showdown, text=Mewtwo.name)
+Pokemondisplay1.grid()
+
+Pokemondisplay2 = tk.Label(Showdown, text= Nidoking.name)
+Pokemondisplay2.grid()
+
+attack_button= tk.Button(Showdown, text= "Psystrike", command=lambda: attack_(Mewtwo, Nidoking))
+attack_button.grid()
+
+window_width = 600
+window_height = 600
+
+screen_width = Showdown.winfo_screenwidth()
+screen_height = Showdown.winfo_screenheight()
+
+center_x = int(screen_width/2 - window_width / 2)
+center_y = int(screen_height/2 - window_height / 2)
+
+Showdown.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
+Showdown.resizable(False, False)
+
+tk.mainloop()
