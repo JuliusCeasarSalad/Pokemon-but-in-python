@@ -1,7 +1,10 @@
 #a simple pokemon battler for python
 #for now its just two pokemon
 import tkinter as tk
+from tkinter import ttk
 import random
+
+
 
 #all type advantages
 Typeadvantage = {
@@ -62,7 +65,7 @@ class Pokemon():
         self.move4 = move4
 
 def attack_(self, other):
-    "Attack another pokemon"
+    "Attack another pokemon with first move"
     #Critical hit (1/24 chance)
     critical = 1.5 if random.choice(f"{'0'*23}1") == "1" else 1
     #Random effect
@@ -73,6 +76,60 @@ def attack_(self, other):
     typeBonus = calculateTypeBonus(self, other)
     #Calculate damage
     other.hp -= round(((42 * self.move1.power * ((self.atk / other.deff))/2) / 50 + 2) * critical * random_ * stab * typeBonus)
+    
+    #Set health to zero if their health goes below zero
+    if other.hp <= 0: other.hp = 0
+    Update1HP()
+    Update2HP()
+
+def attack_2(self, other):
+    "Attack another pokemon with second move"
+    #Critical hit (1/24 chance)
+    critical = 1.5 if random.choice(f"{'0'*23}1") == "1" else 1
+    #Random effect
+    random_ = random.randint(85, 100) / 100
+    #STAB bonus
+    stab = 1.5 if self.move2.type in self.type1 else 1
+    #Type bonus
+    typeBonus = calculateTypeBonus(self, other)
+    #Calculate damage
+    other.hp -= round(((42 * self.move2.power * ((self.atk / other.deff))/2) / 50 + 2) * critical * random_ * stab * typeBonus)
+    
+    #Set health to zero if their health goes below zero
+    if other.hp <= 0: other.hp = 0
+    Update1HP()
+    Update2HP()
+
+def attack_3(self, other):
+    "Attack another pokemon with third move"
+    #Critical hit (1/24 chance)
+    critical = 1.5 if random.choice(f"{'0'*23}1") == "1" else 1
+    #Random effect
+    random_ = random.randint(85, 100) / 100
+    #STAB bonus
+    stab = 1.5 if self.move3.type in self.type1 else 1
+    #Type bonus
+    typeBonus = calculateTypeBonus(self, other)
+    #Calculate damage
+    other.hp -= round(((42 * self.move3.power * ((self.atk / other.deff))/2) / 50 + 2) * critical * random_ * stab * typeBonus)
+    
+    #Set health to zero if their health goes below zero
+    if other.hp <= 0: other.hp = 0
+    Update1HP()
+    Update2HP()
+
+def attack_4(self, other):
+    "Attack another pokemon with fourth move"
+    #Critical hit (1/24 chance)
+    critical = 1.5 if random.choice(f"{'0'*23}1") == "1" else 1
+    #Random effect
+    random_ = random.randint(85, 100) / 100
+    #STAB bonus
+    stab = 1.5 if self.move4.type in self.type1 else 1
+    #Type bonus
+    typeBonus = calculateTypeBonus(self, other)
+    #Calculate damage
+    other.hp -= round(((42 * self.move4.power * ((self.atk / other.deff))/2) / 50 + 2) * critical * random_ * stab * typeBonus)
     
     #Set health to zero if their health goes below zero
     if other.hp <= 0: other.hp = 0
@@ -97,6 +154,9 @@ Thunderbolt = Attacks("electric", 90, 100, 24, True)
 
 Showdown = tk.Tk()
 Showdown.title("Pykemon")
+
+Mewtwo_sprite = tk.PhotoImage(file=r"C:\Users\messierj\OneDrive - Conseil scolaire Viamonde\Documents\Code projects\Python\Assets\Mewtwo.png")
+Nidoking_sprite = tk.PhotoImage(file=r"C:\Users\messierj\OneDrive - Conseil scolaire Viamonde\Documents\Code projects\Python\Assets\Nidoking.png")
 
 Mewtwo = Pokemon("psychic", " ", 109, 110, 90, 154, 90, 130, "Mewtwo", Psystrike, Icebeam, Fireblast, Shadowball)
 Nidoking = Pokemon("poison","ground", 81, 102, 77, 85, 75, 85, "Nidoking", Sludgewave, Earthpower, Fireblast, Thunderbolt)
@@ -130,11 +190,26 @@ Pokemondisplay1.grid(column=0, row=0, sticky=tk.W, padx=10, pady=1)
 Pokemondisplay2 = tk.Label(Showdown, text= Nidoking.name)
 Pokemondisplay2.grid(column=2, row=0, sticky=tk.W, padx=10, pady=1)
 
-attack_button= tk.Button(Showdown, text= "Psystrike", command=lambda: attack_(Mewtwo, Nidoking))
-attack_button.grid(column=0, row=2, sticky=tk.W, padx=100, pady=100)
+Pokemon_sprite1 = ttk.Label(Showdown, image= Mewtwo_sprite, padding= 10)
+Pokemon_sprite1.grid(column=0, row=2, sticky=tk.W, padx=10, pady=1)
 
-window_width = 600
-window_height = 600
+Pokemon_sprite2 = ttk.Label(Showdown, image= Nidoking_sprite, padding= 10)
+Pokemon_sprite2.grid(column=2, row= 2, sticky=tk.W, padx=10, pady=1)
+
+attack_button= tk.Button(Showdown, text= "Psystrike", command=lambda: attack_(Mewtwo, Nidoking))
+attack_button.grid(column=0, row=3, sticky=tk.W, padx=100, pady=1)
+
+attack_button1= tk.Button(Showdown, text= "Icebeam", command= lambda: attack_2(Mewtwo,Nidoking))
+attack_button1.grid(column=0, row=4, sticky=tk.W, padx=100, pady=1)
+
+attack_button2= tk.Button(Showdown, text= "Fireblast", command= lambda: attack_3(Mewtwo,Nidoking))
+attack_button2.grid(column=0, row=3, sticky=tk.W, padx=1, pady=1)
+
+attack_button3= tk.Button(Showdown, text= "Shadow ball", command= lambda: attack_3(Mewtwo,Nidoking))
+attack_button3.grid(column=0, row=4, sticky=tk.W, padx=1, pady=1)
+
+window_width = 500
+window_height = 500
 
 Showdown.columnconfigure(0, weight=1)
 Showdown.columnconfigure(1, weight=3)
