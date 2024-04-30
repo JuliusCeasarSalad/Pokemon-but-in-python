@@ -119,22 +119,25 @@ def Update2HP():
     Hpdisplay2.config(text=f"{Nidoking.hp}")
 
 Hpdisplay1 = tk.Label(Showdown, text=f"{Mewtwo.hp}")
-Hpdisplay1.grid()
+Hpdisplay1.grid(column=0, row=1, sticky=tk.W, padx=10, pady=1)
 
 Hpdisplay2 = tk.Label(Showdown, text=f"{Nidoking.hp}")
-Hpdisplay2.grid()
+Hpdisplay2.grid(column=2, row=1, sticky=tk.W, padx=10, pady=1)
 
 Pokemondisplay1 = tk.Label(Showdown, text=Mewtwo.name)
-Pokemondisplay1.grid()
+Pokemondisplay1.grid(column=0, row=0, sticky=tk.W, padx=10, pady=1)
 
 Pokemondisplay2 = tk.Label(Showdown, text= Nidoking.name)
-Pokemondisplay2.grid()
+Pokemondisplay2.grid(column=2, row=0, sticky=tk.W, padx=10, pady=1)
 
 attack_button= tk.Button(Showdown, text= "Psystrike", command=lambda: attack_(Mewtwo, Nidoking))
-attack_button.grid()
+attack_button.grid(column=0, row=2, sticky=tk.W, padx=100, pady=100)
 
 window_width = 600
 window_height = 600
+
+Showdown.columnconfigure(0, weight=1)
+Showdown.columnconfigure(1, weight=3)
 
 screen_width = Showdown.winfo_screenwidth()
 screen_height = Showdown.winfo_screenheight()
