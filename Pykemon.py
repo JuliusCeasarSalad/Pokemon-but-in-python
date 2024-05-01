@@ -65,7 +65,7 @@ class Pokemon():
         self.move4 = move4
 
 def attack_(self, other):
-    "Attack another pokemon with first move"
+    "Attack another pokemon with first move. First slot is the attacker and the second is the defender"
     #Critical hit (1/24 chance)
     critical = 1.5 if random.choice(f"{'0'*23}1") == "1" else 1
     #Random effect
@@ -75,7 +75,10 @@ def attack_(self, other):
     #Type bonus
     typeBonus = calculateTypeBonus(self, other)
     #Calculate damage
-    other.hp -= round(((42 * self.move1.power * ((self.atk / other.deff))/2) / 50 + 2) * critical * random_ * stab * typeBonus)
+    if self.move1.special == True:
+         other.hp -= round(((42 * self.move1.power * ((self.spatk / other.spdef))/2) / 50 + 2) * critical * random_ * stab * typeBonus)
+    else:
+        other.hp -= round(((42 * self.move1.power * ((self.atk / other.deff))/2) / 50 + 2) * critical * random_ * stab * typeBonus)
     
     #Set health to zero if their health goes below zero
     if other.hp <= 0: other.hp = 0
@@ -83,7 +86,7 @@ def attack_(self, other):
     Update2HP()
 
 def attack_2(self, other):
-    "Attack another pokemon with second move"
+    "Attack another pokemon with second move. First slot is the attacker and the second is the defender"
     #Critical hit (1/24 chance)
     critical = 1.5 if random.choice(f"{'0'*23}1") == "1" else 1
     #Random effect
@@ -93,7 +96,10 @@ def attack_2(self, other):
     #Type bonus
     typeBonus = calculateTypeBonus(self, other)
     #Calculate damage
-    other.hp -= round(((42 * self.move2.power * ((self.atk / other.deff))/2) / 50 + 2) * critical * random_ * stab * typeBonus)
+    if self.move2.special == True:
+         other.hp -= round(((42 * self.move2.power * ((self.spatk / other.spdef))/2) / 50 + 2) * critical * random_ * stab * typeBonus)
+    else:
+        other.hp -= round(((42 * self.move2.power * ((self.atk / other.deff))/2) / 50 + 2) * critical * random_ * stab * typeBonus)
     
     #Set health to zero if their health goes below zero
     if other.hp <= 0: other.hp = 0
@@ -101,7 +107,7 @@ def attack_2(self, other):
     Update2HP()
 
 def attack_3(self, other):
-    "Attack another pokemon with third move"
+    "Attack another pokemon with third move. First slot is the attacker and the second is the defender"
     #Critical hit (1/24 chance)
     critical = 1.5 if random.choice(f"{'0'*23}1") == "1" else 1
     #Random effect
@@ -111,15 +117,17 @@ def attack_3(self, other):
     #Type bonus
     typeBonus = calculateTypeBonus(self, other)
     #Calculate damage
-    other.hp -= round(((42 * self.move3.power * ((self.atk / other.deff))/2) / 50 + 2) * critical * random_ * stab * typeBonus)
-    
+    if self.move3.special == True:
+         other.hp -= round(((42 * self.move3.power * ((self.spatk / other.spdef))/2) / 50 + 2) * critical * random_ * stab * typeBonus)
+    else:
+        other.hp -= round(((42 * self.move3.power * ((self.atk / other.deff))/2) / 50 + 2) * critical * random_ * stab * typeBonus)
     #Set health to zero if their health goes below zero
     if other.hp <= 0: other.hp = 0
     Update1HP()
     Update2HP()
 
 def attack_4(self, other):
-    "Attack another pokemon with fourth move"
+    "Attack another pokemon with fourth move. First slot is the attacker and the second is the defender"
     #Critical hit (1/24 chance)
     critical = 1.5 if random.choice(f"{'0'*23}1") == "1" else 1
     #Random effect
@@ -129,7 +137,10 @@ def attack_4(self, other):
     #Type bonus
     typeBonus = calculateTypeBonus(self, other)
     #Calculate damage
-    other.hp -= round(((42 * self.move4.power * ((self.atk / other.deff))/2) / 50 + 2) * critical * random_ * stab * typeBonus)
+    if self.move4.special == True:
+         other.hp -= round(((42 * self.move4.power * ((self.spatk / other.spdef))/2) / 50 + 2) * critical * random_ * stab * typeBonus)
+    else:
+        other.hp -= round(((42 * self.move4.power * ((self.atk / other.deff))/2) / 50 + 2) * critical * random_ * stab * typeBonus)
     
     #Set health to zero if their health goes below zero
     if other.hp <= 0: other.hp = 0
@@ -148,7 +159,7 @@ Psystrike = Attacks("psychic", 100, 100, 16, True)
 Icebeam = Attacks("ice", 90, 100, 16, True)
 Fireblast = Attacks("fire", 110, 85, 8, True)
 Shadowball = Attacks("ghost", 80, 100, 24, True)
-Sludgewave = Attacks("posison", 95, 100, 16, True)
+Sludgewave = Attacks("poison", 95, 100, 16, True)
 Earthpower = Attacks("ground", 90, 100, 16, False)
 Thunderbolt = Attacks("electric", 90, 100, 24, True)
 
@@ -196,17 +207,30 @@ Pokemon_sprite1.grid(column=0, row=2, sticky=tk.W, padx=10, pady=1)
 Pokemon_sprite2 = ttk.Label(Showdown, image= Nidoking_sprite, padding= 10)
 Pokemon_sprite2.grid(column=2, row= 2, sticky=tk.W, padx=10, pady=1)
 
-attack_button= tk.Button(Showdown, text= "Psystrike", command=lambda: attack_(Mewtwo, Nidoking))
-attack_button.grid(column=0, row=3, sticky=tk.W, padx=100, pady=1)
+Pokemon1_attack_button= tk.Button(Showdown, text= "Psystrike", command=lambda: attack_(Mewtwo, Nidoking))
+Pokemon1_attack_button.grid(column=0, row=3, sticky=tk.W, padx=100, pady=1)
 
-attack_button1= tk.Button(Showdown, text= "Icebeam", command= lambda: attack_2(Mewtwo,Nidoking))
-attack_button1.grid(column=0, row=4, sticky=tk.W, padx=100, pady=1)
+Pokemon1_attack_button1= tk.Button(Showdown, text= "Icebeam", command= lambda: attack_2(Mewtwo,Nidoking))
+Pokemon1_attack_button1.grid(column=0, row=4, sticky=tk.W, padx=100, pady=1)
 
-attack_button2= tk.Button(Showdown, text= "Fireblast", command= lambda: attack_3(Mewtwo,Nidoking))
-attack_button2.grid(column=0, row=3, sticky=tk.W, padx=1, pady=1)
+Pokemon1_attack_button2= tk.Button(Showdown, text= "Fireblast", command= lambda: attack_3(Mewtwo,Nidoking))
+Pokemon1_attack_button2.grid(column=0, row=3, sticky=tk.W, padx=1, pady=1)
 
-attack_button3= tk.Button(Showdown, text= "Shadow ball", command= lambda: attack_3(Mewtwo,Nidoking))
-attack_button3.grid(column=0, row=4, sticky=tk.W, padx=1, pady=1)
+Pokemon1_attack_button3= tk.Button(Showdown, text= "Shadow ball", command= lambda: attack_3(Mewtwo,Nidoking))
+Pokemon1_attack_button3.grid(column=0, row=4, sticky=tk.W, padx=1, pady=1)
+
+Pokemon2_attack_button= tk.Button(Showdown, text= "Sludge wave", command= lambda: attack_(Nidoking,Mewtwo))
+Pokemon2_attack_button.grid(column= 2, row= 3, sticky=tk.W, padx=1, pady=1)
+
+Pokemon2_attack_button2= tk.Button(Showdown, text= "Earth power", command= lambda: attack_2(Nidoking,Mewtwo))
+Pokemon2_attack_button2.grid(column= 2, row= 3, sticky=tk.W, padx=1, pady=1)
+
+Pokemon2_attack_button3= tk.Button(Showdown, text= "Sludge wave", command= lambda: attack_3(Nidoking,Mewtwo))
+Pokemon2_attack_button3.grid(column= 2, row= 3, sticky=tk.W, padx=1, pady=1)
+
+Pokemon2_attack_button4= tk.Button(Showdown, text= "Sludge wave", command= lambda: attack_4(Nidoking,Mewtwo))
+Pokemon2_attack_button4.grid(column= 2, row= 3, sticky=tk.W, padx=1, pady=1)
+
 
 window_width = 500
 window_height = 500
