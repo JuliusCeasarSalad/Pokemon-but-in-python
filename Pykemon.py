@@ -148,29 +148,30 @@ def attack_4(self, other):
     Update2HP()
 
 class Attacks():
-    def __init__(self, type_, power, acuracy, pp, special):
+    def __init__(self, type_, power, acuracy, pp, special, name):
         self.type = type_
         self.power = power
         self.acuracy = acuracy
         self.pp = pp
         self.special = special
+        self.name = name
 
-Psystrike = Attacks("psychic", 100, 100, 16, True)
-Icebeam = Attacks("ice", 90, 100, 16, True)
-Fireblast = Attacks("fire", 110, 85, 8, True)
-Shadowball = Attacks("ghost", 80, 100, 24, True)
-Sludgewave = Attacks("poison", 95, 100, 16, True)
-Earthpower = Attacks("ground", 90, 100, 16, False)
-Thunderbolt = Attacks("electric", 90, 100, 24, True)
+Psystrike = Attacks("psychic", 100, 100, 16, True, "Psystrike")
+Icebeam = Attacks("ice", 90, 100, 16, True, "Ice beam")
+Fireblast = Attacks("fire", 110, 85, 8, True, "Fire blast")
+Shadowball = Attacks("ghost", 80, 100, 24, True, "Shadow ball")
+Sludgewave = Attacks("poison", 95, 100, 16, True, "Sludge wave")
+Earthpower = Attacks("ground", 90, 100, 16, False, "Earth power")
+Thunderbolt = Attacks("electric", 90, 100, 24, True, "Thunderbolt")
 
 Showdown = tk.Tk()
 Showdown.title("Pykemon")
 
-Mewtwo_sprite = tk.PhotoImage(file=r"C:\Users\messierj\OneDrive - Conseil scolaire Viamonde\Documents\Code projects\Python\Assets\Mewtwo.png")
-Nidoking_sprite = tk.PhotoImage(file=r"C:\Users\messierj\OneDrive - Conseil scolaire Viamonde\Documents\Code projects\Python\Assets\Nidoking.png")
-
 Mewtwo = Pokemon("psychic", " ", 109, 110, 90, 154, 90, 130, "Mewtwo", Psystrike, Icebeam, Fireblast, Shadowball)
 Nidoking = Pokemon("poison","ground", 81, 102, 77, 85, 75, 85, "Nidoking", Sludgewave, Earthpower, Fireblast, Thunderbolt)
+
+Mewtwo_sprite = tk.PhotoImage(file=r"C:\Users\messierj\OneDrive - Conseil scolaire Viamonde\Documents\Code projects\Python\Assets\Mewtwo.png")
+Nidoking_sprite = tk.PhotoImage(file=r"C:\Users\messierj\OneDrive - Conseil scolaire Viamonde\Documents\Code projects\Python\Assets\Nidoking.png")
 
 actingpokemon1 = Mewtwo
 actingpokemon2 = Nidoking
@@ -207,29 +208,29 @@ Pokemon_sprite1.grid(column=0, row=2, sticky=tk.W, padx=10, pady=1)
 Pokemon_sprite2 = ttk.Label(Showdown, image= Nidoking_sprite, padding= 10)
 Pokemon_sprite2.grid(column=2, row= 2, sticky=tk.W, padx=10, pady=1)
 
-Pokemon1_attack_button= tk.Button(Showdown, text= "Psystrike", command=lambda: attack_(actingpokemon1, actingpokemon2))
+Pokemon1_attack_button= tk.Button(Showdown, text= f"{actingpokemon1.move1.name}", command=lambda: attack_(actingpokemon1, actingpokemon2))
 Pokemon1_attack_button.grid(column=0, row=3, sticky=tk.W, padx=100, pady=1)
 
-Pokemon1_attack_button1= tk.Button(Showdown, text= "Icebeam", command= lambda: attack_2(actingpokemon1,actingpokemon2))
+Pokemon1_attack_button1= tk.Button(Showdown, text= f"{actingpokemon1.move2.name}", command= lambda: attack_2(actingpokemon1,actingpokemon2))
 Pokemon1_attack_button1.grid(column=0, row=4, sticky=tk.W, padx=100, pady=1)
 
-Pokemon1_attack_button2= tk.Button(Showdown, text= "Fireblast", command= lambda: attack_3(actingpokemon1,actingpokemon2))
+Pokemon1_attack_button2= tk.Button(Showdown, text= f"{actingpokemon1.move3.name}", command= lambda: attack_3(actingpokemon1,actingpokemon2))
 Pokemon1_attack_button2.grid(column=0, row=3, sticky=tk.W, padx=1, pady=1)
 
-Pokemon1_attack_button3= tk.Button(Showdown, text= "Shadow ball", command= lambda: attack_3(actingpokemon1,actingpokemon2))
+Pokemon1_attack_button3= tk.Button(Showdown, text= f"{actingpokemon1.move4.name}", command= lambda: attack_3(actingpokemon1,actingpokemon2))
 Pokemon1_attack_button3.grid(column=0, row=4, sticky=tk.W, padx=1, pady=1)
 
-Pokemon2_attack_button= tk.Button(Showdown, text= "Sludge wave", command= lambda: attack_(actingpokemon2,actingpokemon1))
+Pokemon2_attack_button= tk.Button(Showdown, text= f"{actingpokemon2.move1.name}", command= lambda: attack_(actingpokemon2,actingpokemon1))
 Pokemon2_attack_button.grid(column= 2, row= 3, sticky=tk.W, padx=1, pady=1)
 
-Pokemon2_attack_button2= tk.Button(Showdown, text= "Earth power", command= lambda: attack_2(actingpokemon2,actingpokemon1))
-Pokemon2_attack_button2.grid(column= 2, row= 3, sticky=tk.W, padx=1, pady=1)
+Pokemon2_attack_button2= tk.Button(Showdown, text= f"{actingpokemon2.move2.name}", command= lambda: attack_2(actingpokemon2,actingpokemon1))
+Pokemon2_attack_button2.grid(column= 3, row= 3, sticky=tk.W, padx=1, pady=1)
 
-Pokemon2_attack_button3= tk.Button(Showdown, text= "Sludge wave", command= lambda: attack_3(actingpokemon2,actingpokemon1))
-Pokemon2_attack_button3.grid(column= 2, row= 3, sticky=tk.W, padx=1, pady=1)
+Pokemon2_attack_button3= tk.Button(Showdown, text= f"{actingpokemon2.move3.name}", command= lambda: attack_3(actingpokemon2,actingpokemon1))
+Pokemon2_attack_button3.grid(column= 2, row= 4, sticky=tk.W, padx=1, pady=1)
 
-Pokemon2_attack_button4= tk.Button(Showdown, text= "Sludge wave", command= lambda: attack_4(actingpokemon2,actingpokemon1))
-Pokemon2_attack_button4.grid(column= 2, row= 3, sticky=tk.W, padx=1, pady=1)
+Pokemon2_attack_button4= tk.Button(Showdown, text= f"{actingpokemon2.move4.name}", command= lambda: attack_4(actingpokemon2,actingpokemon1))
+Pokemon2_attack_button4.grid(column= 3, row= 4, sticky=tk.W, padx=1, pady=1)
 
 
 window_width = 500
