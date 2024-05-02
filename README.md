@@ -1,7 +1,7 @@
-A simple (when i say simple i don't quite mean that) pokemon battler
+A simple (when i say simple i don't quite mean that) pokemon battler that uses tkinter
 
 current goals
-1. add all proper battle fuctionalaity
+1. add all nessairy battle fuctionalaity
 2. add switching pokemons
 3. add more pokemon
 
