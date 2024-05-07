@@ -49,7 +49,7 @@ def calculateTypeBonus(attacker, defender):
     return bonus
 
 class Pokemon():
-    def __init__(self, type1, type2, hp, atk, deff, spatk, spdef, speed, name, move1, move2, move3, move4):
+    def __init__(self, type1, type2, hp, atk, deff, spatk, spdef, speed, name, move1, move2, move3, move4, sprite):
         self.type1 = type1
         self.type2 = type2
         self.hp = (((2*hp + 31) * 100)/100) + 110
@@ -63,6 +63,7 @@ class Pokemon():
         self.move2 = move2
         self.move3 = move3
         self.move4 = move4
+        self.sprite = sprite
 
 def attack_(self, other):
     "Attack another pokemon with first move. First slot is the attacker and the second is the defender"
@@ -82,8 +83,7 @@ def attack_(self, other):
     
     #Set health to zero if their health goes below zero
     if other.hp <= 0: other.hp = 0
-    Update1HP()
-    Update2HP()
+    UpdateHP()
 
 def attack_2(self, other):
     "Attack another pokemon with second move. First slot is the attacker and the second is the defender"
@@ -103,8 +103,7 @@ def attack_2(self, other):
     
     #Set health to zero if their health goes below zero
     if other.hp <= 0: other.hp = 0
-    Update1HP()
-    Update2HP()
+    UpdateHP()
 
 def attack_3(self, other):
     "Attack another pokemon with third move. First slot is the attacker and the second is the defender"
@@ -123,8 +122,7 @@ def attack_3(self, other):
         other.hp -= round(((42 * self.move3.power * ((self.atk / other.deff))/2) / 50 + 2) * critical * random_ * stab * typeBonus)
     #Set health to zero if their health goes below zero
     if other.hp <= 0: other.hp = 0
-    Update1HP()
-    Update2HP()
+    UpdateHP()
 
 def attack_4(self, other):
     "Attack another pokemon with fourth move. First slot is the attacker and the second is the defender"
@@ -144,8 +142,16 @@ def attack_4(self, other):
     
     #Set health to zero if their health goes below zero
     if other.hp <= 0: other.hp = 0
-    Update1HP()
-    Update2HP()
+    UpdateHP()
+
+def switch_1():
+    "Switches the first pokemon"
+    global current
+    current = 1
+    UpdateHP()
+    UpdateMoves()
+    UpdateName()
+    Updatesprite()
 
 class Attacks():
     def __init__(self, type_, power, acuracy, pp, special, name):
@@ -155,6 +161,32 @@ class Attacks():
         self.pp = pp
         self.special = special
         self.name = name
+
+def UpdateHP():
+    "Changes the displayed HP value of the pokemons"
+    Hpdisplay1.config(text=f"{actingpokemon1[current].hp}")
+    Hpdisplay2.config(text=f"{actingpokemon2[current2].hp}")
+
+def UpdateMoves():
+    "Updates the moves of the pokemon"
+    Pokemon1_attack_button.config(text=f"{actingpokemon1[current].move1.name}",command= lambda: attack_(actingpokemon1[current], actingpokemon2[current2]))
+    Pokemon1_attack_button1.config(text=f"{actingpokemon1[current].move2.name}",command= lambda: attack_2(actingpokemon1[current], actingpokemon2[current2]))
+    Pokemon1_attack_button2.config(text=f"{actingpokemon1[current].move3.name}",command= lambda: attack_3(actingpokemon1[current], actingpokemon2[current2]))
+    Pokemon1_attack_button3.config(text=f"{actingpokemon1[current].move4.name}",command= lambda: attack_4(actingpokemon1[current], actingpokemon2[current2]))
+    Pokemon2_attack_button.config(text=f"{actingpokemon2[current2].move1.name}", command= lambda: attack_(actingpokemon2[current2],actingpokemon1[current]))
+    Pokemon2_attack_button2.config(text=f"{actingpokemon2[current2].move2.name}", command= lambda: attack_2(actingpokemon2[current2],actingpokemon1[current]))
+    Pokemon2_attack_button3.config(text=f"{actingpokemon2[current2].move3.name}", command= lambda: attack_3(actingpokemon2[current2],actingpokemon1[current]))
+    Pokemon2_attack_button4.config(text=f"{actingpokemon2[current2].move4.name}", command= lambda: attack_4(actingpokemon2[current2],actingpokemon1[current]))
+
+def UpdateName():
+    "Updates the name"
+    Pokemondisplay1.config(text=f"{actingpokemon1[current].name}")
+    Pokemondisplay2.config(text=f"{actingpokemon2[current2].name}")
+
+def Updatesprite():
+    "Updates the sprite"
+    Pokemon_sprite1.config(image=f"{actingpokemon1[current].sprite}")
+    Pokemon_sprite2.config(image=f"{actingpokemon2[current2].sprite}")
 
 Psystrike = Attacks("psychic", 100, 100, 16, True, "Psystrike")
 Icebeam = Attacks("ice", 90, 100, 16, True, "Ice beam")
@@ -167,71 +199,69 @@ Thunderbolt = Attacks("electric", 90, 100, 24, True, "Thunderbolt")
 Showdown = tk.Tk()
 Showdown.title("Pykemon")
 
-Mewtwo = Pokemon("psychic", " ", 109, 110, 90, 154, 90, 130, "Mewtwo", Psystrike, Icebeam, Fireblast, Shadowball)
-Nidoking = Pokemon("poison","ground", 81, 102, 77, 85, 75, 85, "Nidoking", Sludgewave, Earthpower, Fireblast, Thunderbolt)
+current = 0
+current2 = 0
 
 Mewtwo_sprite = tk.PhotoImage(file=r"C:\Users\messierj\OneDrive - Conseil scolaire Viamonde\Documents\Code projects\Python\Assets\Mewtwo.png")
 Nidoking_sprite = tk.PhotoImage(file=r"C:\Users\messierj\OneDrive - Conseil scolaire Viamonde\Documents\Code projects\Python\Assets\Nidoking.png")
 
-actingpokemon1 = Mewtwo
-actingpokemon2 = Nidoking
+Mewtwo = Pokemon("psychic", " ", 109, 110, 90, 154, 90, 130, "Mewtwo", Psystrike, Icebeam, Fireblast, Shadowball, Mewtwo_sprite)
+Nidoking = Pokemon("poison","ground", 81, 102, 77, 85, 75, 85, "Nidoking", Sludgewave, Earthpower, Fireblast, Thunderbolt, Nidoking_sprite)
+test = Pokemon("fire", " ", 10, 10, 10, 10, 10, 10, "Test", Shadowball, Shadowball, Shadowball, Shadowball, Nidoking_sprite)
+
+actingpokemon1 = [Mewtwo, test]
+actingpokemon2 = [Nidoking]
 
 Hp1 = tk.IntVar()
-Hp1.set(actingpokemon1.hp)
+Hp1.set(actingpokemon1[current].hp)
 
 Hp2 = tk.IntVar()
-Hp2.set(actingpokemon2.hp)
+Hp2.set(actingpokemon2[current2].hp)
 
-def Update1HP():
-    "Changes the displayed HP value of the first pokemon"
-    Hpdisplay1.config(text=f"{Mewtwo.hp}")
-        
-def Update2HP():
-    "Changes the displayed HP value of the second pokemon"
-    Hpdisplay2.config(text=f"{Nidoking.hp}")
-
-Hpdisplay1 = tk.Label(Showdown, text=f"{actingpokemon1.hp}")
+Hpdisplay1 = tk.Label(Showdown, text=f"{actingpokemon1[current].hp}")
 Hpdisplay1.grid(column=0, row=1, sticky=tk.W, padx=10, pady=1)
 
-Hpdisplay2 = tk.Label(Showdown, text=f"{actingpokemon2.hp}")
+Hpdisplay2 = tk.Label(Showdown, text=f"{actingpokemon2[current2].hp}")
 Hpdisplay2.grid(column=2, row=1, sticky=tk.W, padx=10, pady=1)
 
-Pokemondisplay1 = tk.Label(Showdown, text=actingpokemon1.name)
+Pokemondisplay1 = tk.Label(Showdown, text=actingpokemon1[current].name)
 Pokemondisplay1.grid(column=0, row=0, sticky=tk.W, padx=10, pady=1)
 
-Pokemondisplay2 = tk.Label(Showdown, text= actingpokemon2.name)
+Pokemondisplay2 = tk.Label(Showdown, text= actingpokemon2[current2].name)
 Pokemondisplay2.grid(column=2, row=0, sticky=tk.W, padx=10, pady=1)
 
-Pokemon_sprite1 = ttk.Label(Showdown, image= Mewtwo_sprite, padding= 10)
+Pokemon_sprite1 = ttk.Label(Showdown, image= actingpokemon1[current].sprite, padding= 10)
 Pokemon_sprite1.grid(column=0, row=2, sticky=tk.W, padx=10, pady=1)
 
-Pokemon_sprite2 = ttk.Label(Showdown, image= Nidoking_sprite, padding= 10)
+Pokemon_sprite2 = ttk.Label(Showdown, image= actingpokemon2[current2].sprite, padding= 10)
 Pokemon_sprite2.grid(column=2, row= 2, sticky=tk.W, padx=10, pady=1)
 
-Pokemon1_attack_button= tk.Button(Showdown, text= f"{actingpokemon1.move1.name}", command=lambda: attack_(actingpokemon1, actingpokemon2))
+Pokemon1_attack_button= tk.Button(Showdown, text= f"{actingpokemon1[current].move1.name}", command=lambda: attack_(actingpokemon1[current], actingpokemon2[current2]))
 Pokemon1_attack_button.grid(column=0, row=3, sticky=tk.W, padx=100, pady=1)
 
-Pokemon1_attack_button1= tk.Button(Showdown, text= f"{actingpokemon1.move2.name}", command= lambda: attack_2(actingpokemon1,actingpokemon2))
+Pokemon1_attack_button1= tk.Button(Showdown, text= f"{actingpokemon1[current].move2.name}", command= lambda: attack_2(actingpokemon1[current],actingpokemon2[current2]))
 Pokemon1_attack_button1.grid(column=0, row=4, sticky=tk.W, padx=100, pady=1)
 
-Pokemon1_attack_button2= tk.Button(Showdown, text= f"{actingpokemon1.move3.name}", command= lambda: attack_3(actingpokemon1,actingpokemon2))
+Pokemon1_attack_button2= tk.Button(Showdown, text= f"{actingpokemon1[current].move3.name}", command= lambda: attack_3(actingpokemon1[current],actingpokemon2[current2]))
 Pokemon1_attack_button2.grid(column=0, row=3, sticky=tk.W, padx=1, pady=1)
 
-Pokemon1_attack_button3= tk.Button(Showdown, text= f"{actingpokemon1.move4.name}", command= lambda: attack_3(actingpokemon1,actingpokemon2))
+Pokemon1_attack_button3= tk.Button(Showdown, text= f"{actingpokemon1[current].move4.name}", command= lambda: attack_3(actingpokemon1[current],actingpokemon2[current2]))
 Pokemon1_attack_button3.grid(column=0, row=4, sticky=tk.W, padx=1, pady=1)
 
-Pokemon2_attack_button= tk.Button(Showdown, text= f"{actingpokemon2.move1.name}", command= lambda: attack_(actingpokemon2,actingpokemon1))
+Pokemon2_attack_button= tk.Button(Showdown, text= f"{actingpokemon2[current2].move1.name}", command= lambda: attack_(actingpokemon2[current2],actingpokemon1[current]))
 Pokemon2_attack_button.grid(column= 2, row= 3, sticky=tk.W, padx=1, pady=1)
 
-Pokemon2_attack_button2= tk.Button(Showdown, text= f"{actingpokemon2.move2.name}", command= lambda: attack_2(actingpokemon2,actingpokemon1))
+Pokemon2_attack_button2= tk.Button(Showdown, text= f"{actingpokemon2[current2].move2.name}", command= lambda: attack_2(actingpokemon2[current2],actingpokemon1[current]))
 Pokemon2_attack_button2.grid(column= 3, row= 3, sticky=tk.W, padx=1, pady=1)
 
-Pokemon2_attack_button3= tk.Button(Showdown, text= f"{actingpokemon2.move3.name}", command= lambda: attack_3(actingpokemon2,actingpokemon1))
+Pokemon2_attack_button3= tk.Button(Showdown, text= f"{actingpokemon2[current2].move3.name}", command= lambda: attack_3(actingpokemon2[current2],actingpokemon1[current]))
 Pokemon2_attack_button3.grid(column= 2, row= 4, sticky=tk.W, padx=1, pady=1)
 
-Pokemon2_attack_button4= tk.Button(Showdown, text= f"{actingpokemon2.move4.name}", command= lambda: attack_4(actingpokemon2,actingpokemon1))
+Pokemon2_attack_button4= tk.Button(Showdown, text= f"{actingpokemon2[current2].move4.name}", command= lambda: attack_4(actingpokemon2[current2],actingpokemon1[current]))
 Pokemon2_attack_button4.grid(column= 3, row= 4, sticky=tk.W, padx=1, pady=1)
 
+test_button= tk.Button(Showdown, text= "switch", command= switch_1)
+test_button.grid()
 
 window_width = 500
 window_height = 500
