@@ -29,6 +29,15 @@ Typeadvantage = {
 
 turn = 0
 
+onemove1 = True
+onemove2 = True
+onemove3 = True
+onemove4 = True
+twomove1 = True
+twomove2 = True
+twomove3 = True
+twomove4 = True
+
 #Calcuate type bonuses
 def calculateTypeBonus(attacker, defender):
     "Calcuates the types bonuses between two pokémon. Returns the bonus"
@@ -43,7 +52,9 @@ def calculateTypeBonus(attacker, defender):
 
     #Attack boosts
     for modifier in Typeadvantage[attackType]:
-        if modifier[0] in defenderTypes: bonus *= modifier[1]
+        if modifier[0] in defenderTypes: 
+            bonus *= modifier[1]
+            Message("Super\n evective!!")
 
     #Return the final boost
     return bonus
@@ -89,14 +100,18 @@ def attack_(self, other):
     typeBonus = calculateTypeBonus(self, other)
     #Calculate damage
     if self.move1.special == True:
-         other.hp -= round(((42 * self.move1.power * ((self.spatk / other.spdef))/2) / 50 + 2) * critical * random_ * stab * typeBonus)
+        other.hp -= round(((42 * self.move1.power * ((self.spatk / other.spdef))/2) / 50 + 2) * critical * random_ * stab * typeBonus)
     else:
         other.hp -= round(((42 * self.move1.power * ((self.atk / other.deff))/2) / 50 + 2) * critical * random_ * stab * typeBonus)
     
     #Set health to zero if their health goes below zero
     if other.hp <= 0: other.hp = 0
+
+    self.move1.pp -= 1
+    
     UpdateHP()
     Turnswitch()
+    movedisable(self)
 
 def attack_2(self, other):
     "Attack another pokemon with second move. First slot is the attacker and the second is the defender"
@@ -116,8 +131,12 @@ def attack_2(self, other):
     
     #Set health to zero if their health goes below zero
     if other.hp <= 0: other.hp = 0
+
+    self.move2.pp -= 1
+
     UpdateHP()
     Turnswitch()
+    movedisable(self)
 
 def attack_3(self, other):
     "Attack another pokemon with third move. First slot is the attacker and the second is the defender"
@@ -136,8 +155,12 @@ def attack_3(self, other):
         other.hp -= round(((42 * self.move3.power * ((self.atk / other.deff))/2) / 50 + 2) * critical * random_ * stab * typeBonus)
     #Set health to zero if their health goes below zero
     if other.hp <= 0: other.hp = 0
+
+    self.move3.pp -= 1
+
     UpdateHP()
     Turnswitch()
+    movedisable(self)
 
 def attack_4(self, other):
     "Attack another pokemon with fourth move. First slot is the attacker and the second is the defender"
@@ -157,8 +180,12 @@ def attack_4(self, other):
     
     #Set health to zero if their health goes below zero
     if other.hp <= 0: other.hp = 0
+
+    self.move4.pp -= 1
+
     UpdateHP()
     Turnswitch()
+    movedisable(self)
 
 def Turnswitch():
     "Changes the turn"
@@ -168,6 +195,10 @@ def Turnswitch():
     else:
         turn = 0
     Turnmovedisable()
+
+def Message(Message_):
+    "Changes the display with the agrument"
+    battle_message.config(text= f"{Message_}")
 
 def switch_1():
     "Switches the first pokemon"
@@ -194,6 +225,34 @@ def UpdateMoves():
     Pokemon2_attack_button3.config(text=f"{actingpokemon2[current2].move3.name}", command= lambda: attack_3(actingpokemon2[current2],actingpokemon1[current]))
     Pokemon2_attack_button4.config(text=f"{actingpokemon2[current2].move4.name}", command= lambda: attack_4(actingpokemon2[current2],actingpokemon1[current]))
 
+def movedisable(self):
+    "disables the pokemons moves"
+    global onemove1, onemove2, onemove3, onemove4, twomove1, twomove2, twomove3, twomove4
+    if self.move1.pp == 0 and actingpokemon1[current] == self:
+        onemove1 = False
+        Pokemon1_attack_button.config(state= "disabled")
+    if self.move2.pp == 0 and actingpokemon1[current] == self:
+        onemove2 = False
+        Pokemon1_attack_button1.config(state= "disabled")
+    if self.move3.pp == 0 and actingpokemon1[current] == self:
+        onemove3 = False
+        Pokemon1_attack_button2.config(state= "disabled")
+    if self.move4.pp == 0 and actingpokemon1[current] == self:
+        onemove4 = False
+        Pokemon1_attack_button3.config(state= "disabled")
+    if self.move1.pp == 0 and actingpokemon2[current2] == self:
+        twomove1 = False
+        Pokemon2_attack_button.config(state= "disabled")
+    if self.move2.pp == 0 and actingpokemon2[current2] == self:
+        twomove2 = False
+        Pokemon2_attack_button2.config(state= "disabled")
+    if self.move3.pp == 0 and actingpokemon2[current2] == self:
+        twomove3 = False
+        Pokemon2_attack_button3.config(state= "disabled")
+    if self.move4.pp == 0 and actingpokemon2[current2] == self:
+        twomove4 = False
+        Pokemon2_attack_button4.config(state= "disabled")
+        
 def UpdateName():
     "Updates the name"
     Pokemondisplay1.config(text=f"{actingpokemon1[current].name}")
@@ -204,7 +263,7 @@ def Updatesprite():
     Pokemon_sprite1.config(image=f"{actingpokemon1[current].sprite}")
     Pokemon_sprite2.config(image=f"{actingpokemon2[current2].sprite}")
 
-Psystrike = Attacks("psychic", 100, 100, 16, True, "Psystrike", False)
+Psystrike = Attacks("psychic", 100, 100, 1, True, "Psystrike", False)
 Icebeam = Attacks("ice", 90, 100, 16, True, "Ice beam", True)
 Fireblast = Attacks("fire", 110, 85, 8, True, "Fire blast", True)
 Shadowball = Attacks("ghost", 80, 100, 24, True, "Shadow ball", False)
@@ -245,9 +304,6 @@ Hpdisplay1.grid(column=0, row=1, sticky=tk.W, padx=10, pady=1)
 Hpdisplay2 = tk.Label(Showdown, text=f"{actingpokemon2[current2].hp}")
 Hpdisplay2.grid(column=2, row=1, sticky=tk.W, padx=10, pady=1)
 
-turndisplay = tk.Label(Showdown, text=f"it is {turn}")
-turndisplay.grid(column=1, row=1, sticky=tk.W, padx=1, pady=1)
-
 Pokemondisplay1 = tk.Label(Showdown, text=actingpokemon1[current].name)
 Pokemondisplay1.grid(column=0, row=0, sticky=tk.W, padx=10, pady=1)
 
@@ -284,26 +340,96 @@ Pokemon2_attack_button3.grid(column= 2, row= 4, sticky=tk.W, padx=1, pady=1)
 Pokemon2_attack_button4= tk.Button(Showdown, text= f"{actingpokemon2[current2].move4.name}", command= lambda: attack_4(actingpokemon2[current2],actingpokemon1[current]))
 Pokemon2_attack_button4.grid(column= 3, row= 4, sticky=tk.W, padx=1, pady=1)
 
+battle_message = tk.Label(Showdown, text= "")
+battle_message.grid(column= 1, row= 5, sticky=tk.W, padx= 1, pady=160)
+
+
 def Turnmovedisable():
     "Disables the moves of the inactive pokemon"
     if turn == 0:
-        Pokemon2_attack_button.config(state= "disabled")
-        Pokemon2_attack_button2.config(state= "disabled")
-        Pokemon2_attack_button3.config(state= "disabled")
-        Pokemon2_attack_button4.config(state= "disabled")
-        Pokemon1_attack_button.config(command= lambda: attack_(actingpokemon1[current],actingpokemon2[current2]))
-        Pokemon1_attack_button1.config(command= lambda: attack_2(actingpokemon1[current],actingpokemon2[current2]))
-        Pokemon1_attack_button2.config(command= lambda: attack_3(actingpokemon1[current],actingpokemon2[current2]))
-        Pokemon1_attack_button3.config(command= lambda: attack_4(actingpokemon1[current],actingpokemon2[current2]))
+        if onemove1 == False:
+            Pokemon2_attack_button.config(state= "disabled")
+            Pokemon2_attack_button2.config(state= "disabled")
+            Pokemon2_attack_button3.config(state= "disabled")
+            Pokemon2_attack_button4.config(state= "disabled")
+            Pokemon1_attack_button1.config(state= "active")
+            Pokemon1_attack_button2.config(state= "active")
+            Pokemon1_attack_button3.config(state= "active")
+        elif onemove2 == False:
+            Pokemon2_attack_button.config(state= "disabled")
+            Pokemon2_attack_button2.config(state= "disabled")
+            Pokemon2_attack_button3.config(state= "disabled")
+            Pokemon2_attack_button4.config(state= "disabled")
+            Pokemon1_attack_button.config(state= "active")  
+            Pokemon1_attack_button2.config(state= "active")
+            Pokemon1_attack_button3.config(state= "active")
+        elif onemove3 == False:
+            Pokemon2_attack_button.config(state= "disabled")
+            Pokemon2_attack_button2.config(state= "disabled")
+            Pokemon2_attack_button3.config(state= "disabled")
+            Pokemon2_attack_button4.config(state= "disabled")
+            Pokemon1_attack_button.config(state= "active")
+            Pokemon1_attack_button1.config(state= "active")
+            Pokemon1_attack_button3.config(state= "active")
+        elif onemove4 == False:
+            Pokemon2_attack_button.config(state= "disabled")
+            Pokemon2_attack_button2.config(state= "disabled")
+            Pokemon2_attack_button3.config(state= "disabled")
+            Pokemon2_attack_button4.config(state= "disabled")
+            Pokemon1_attack_button.config(state= "active")
+            Pokemon1_attack_button1.config(state= "active")
+            Pokemon1_attack_button2.config(state= "active")
+        else:
+            Pokemon2_attack_button.config(state= "disabled")
+            Pokemon2_attack_button2.config(state= "disabled")
+            Pokemon2_attack_button3.config(state= "disabled")
+            Pokemon2_attack_button4.config(state= "disabled")
+            Pokemon1_attack_button.config(state= "active")
+            Pokemon1_attack_button1.config(state= "active")
+            Pokemon1_attack_button2.config(state= "active")
+            Pokemon1_attack_button3.config(state= "active")
     else:
-        Pokemon2_attack_button.config(command= lambda: attack_(actingpokemon2[current2],actingpokemon1[current]))
-        Pokemon2_attack_button2.config(command= lambda: attack_2(actingpokemon2[current2],actingpokemon1[current]))
-        Pokemon2_attack_button3.config(command= lambda: attack_3(actingpokemon2[current2],actingpokemon1[current]))
-        Pokemon2_attack_button4.config(command= lambda: attack_4(actingpokemon2[current2],actingpokemon1[current]))
-        Pokemon1_attack_button.config(state= "disabled")
-        Pokemon1_attack_button1.config(state= "disabled")
-        Pokemon1_attack_button2.config(state= "disabled")
-        Pokemon1_attack_button3.config(state= "disabled")
+        if twomove1 == False:
+            Pokemon2_attack_button2.config(state= "active")
+            Pokemon2_attack_button3.config(state= "active")
+            Pokemon2_attack_button4.config(state= "active")
+            Pokemon1_attack_button.config(state= "disabled")
+            Pokemon1_attack_button1.config(state= "disabled")
+            Pokemon1_attack_button2.config(state= "disabled")
+            Pokemon1_attack_button3.config(state= "disabled")
+        elif twomove2 == False:
+            Pokemon2_attack_button.config(state= "active")
+            Pokemon2_attack_button3.config(state= "active")
+            Pokemon2_attack_button4.config(state= "active")
+            Pokemon1_attack_button.config(state= "disabled")
+            Pokemon1_attack_button1.config(state= "disabled")
+            Pokemon1_attack_button2.config(state= "disabled")
+            Pokemon1_attack_button3.config(state= "disabled")
+        elif twomove3 == False:
+            Pokemon2_attack_button.config(state= "active")
+            Pokemon2_attack_button2.config(state= "active")
+            Pokemon2_attack_button4.config(state= "active")
+            Pokemon1_attack_button.config(state= "disabled")
+            Pokemon1_attack_button1.config(state= "disabled")
+            Pokemon1_attack_button2.config(state= "disabled")
+            Pokemon1_attack_button3.config(state= "disabled")
+        elif twomove4 == False:
+            Pokemon2_attack_button.config(state= "active")
+            Pokemon2_attack_button2.config(state= "active")
+            Pokemon2_attack_button3.config(state= "active")
+            Pokemon1_attack_button.config(state= "disabled")
+            Pokemon1_attack_button1.config(state= "disabled")
+            Pokemon1_attack_button2.config(state= "disabled")
+            Pokemon1_attack_button3.config(state= "disabled")
+        else:
+            Pokemon2_attack_button.config(state= "active")
+            Pokemon2_attack_button2.config(state= "active")
+            Pokemon2_attack_button3.config(state= "active")
+            Pokemon2_attack_button4.config(state= "active")
+            Pokemon1_attack_button.config(state= "disabled")
+            Pokemon1_attack_button1.config(state= "disabled")
+            Pokemon1_attack_button2.config(state= "disabled")
+            Pokemon1_attack_button3.config(state= "disabled")
 
 Turnmovedisable()
 
