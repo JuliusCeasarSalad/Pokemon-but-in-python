@@ -4,8 +4,6 @@ import tkinter as tk
 from tkinter import ttk
 import random
 
-
-
 #all type advantages
 Typeadvantage = {
     "normal": (("rock", 0.5), ("ghost", 0), ("steel", 0.5)),
@@ -29,6 +27,8 @@ Typeadvantage = {
     " ":()
 }
 
+turn = 0
+
 #Calcuate type bonuses
 def calculateTypeBonus(attacker, defender):
     "Calcuates the types bonuses between two pokémon. Returns the bonus"
@@ -49,6 +49,7 @@ def calculateTypeBonus(attacker, defender):
     return bonus
 
 class Pokemon():
+    "Defines the pokemon object"
     def __init__(self, type1, type2, hp, atk, deff, spatk, spdef, speed, name, move1, move2, move3, move4, sprite):
         self.type1 = type1
         self.type2 = type2
@@ -64,6 +65,17 @@ class Pokemon():
         self.move3 = move3
         self.move4 = move4
         self.sprite = sprite
+
+class Attacks():
+    "Defines the Attacks class"
+    def __init__(self, type_, power, acuracy, pp, special, name, second_effect):
+        self.type = type_
+        self.power = power
+        self.acuracy = acuracy
+        self.pp = pp
+        self.special = special
+        self.name = name
+        self.second = second_effect
 
 def attack_(self, other):
     "Attack another pokemon with first move. First slot is the attacker and the second is the defender"
@@ -84,6 +96,7 @@ def attack_(self, other):
     #Set health to zero if their health goes below zero
     if other.hp <= 0: other.hp = 0
     UpdateHP()
+    Turnswitch()
 
 def attack_2(self, other):
     "Attack another pokemon with second move. First slot is the attacker and the second is the defender"
@@ -104,6 +117,7 @@ def attack_2(self, other):
     #Set health to zero if their health goes below zero
     if other.hp <= 0: other.hp = 0
     UpdateHP()
+    Turnswitch()
 
 def attack_3(self, other):
     "Attack another pokemon with third move. First slot is the attacker and the second is the defender"
@@ -123,6 +137,7 @@ def attack_3(self, other):
     #Set health to zero if their health goes below zero
     if other.hp <= 0: other.hp = 0
     UpdateHP()
+    Turnswitch()
 
 def attack_4(self, other):
     "Attack another pokemon with fourth move. First slot is the attacker and the second is the defender"
@@ -143,6 +158,16 @@ def attack_4(self, other):
     #Set health to zero if their health goes below zero
     if other.hp <= 0: other.hp = 0
     UpdateHP()
+    Turnswitch()
+
+def Turnswitch():
+    "Changes the turn"
+    global turn
+    if turn == 0:
+        turn = 1
+    else:
+        turn = 0
+    Turnmovedisable()
 
 def switch_1():
     "Switches the first pokemon"
@@ -152,15 +177,6 @@ def switch_1():
     UpdateMoves()
     UpdateName()
     Updatesprite()
-
-class Attacks():
-    def __init__(self, type_, power, acuracy, pp, special, name):
-        self.type = type_
-        self.power = power
-        self.acuracy = acuracy
-        self.pp = pp
-        self.special = special
-        self.name = name
 
 def UpdateHP():
     "Changes the displayed HP value of the pokemons"
@@ -188,13 +204,17 @@ def Updatesprite():
     Pokemon_sprite1.config(image=f"{actingpokemon1[current].sprite}")
     Pokemon_sprite2.config(image=f"{actingpokemon2[current2].sprite}")
 
-Psystrike = Attacks("psychic", 100, 100, 16, True, "Psystrike")
-Icebeam = Attacks("ice", 90, 100, 16, True, "Ice beam")
-Fireblast = Attacks("fire", 110, 85, 8, True, "Fire blast")
-Shadowball = Attacks("ghost", 80, 100, 24, True, "Shadow ball")
-Sludgewave = Attacks("poison", 95, 100, 16, True, "Sludge wave")
-Earthpower = Attacks("ground", 90, 100, 16, False, "Earth power")
-Thunderbolt = Attacks("electric", 90, 100, 24, True, "Thunderbolt")
+Psystrike = Attacks("psychic", 100, 100, 16, True, "Psystrike", False)
+Icebeam = Attacks("ice", 90, 100, 16, True, "Ice beam", True)
+Fireblast = Attacks("fire", 110, 85, 8, True, "Fire blast", True)
+Shadowball = Attacks("ghost", 80, 100, 24, True, "Shadow ball", False)
+Sludgewave = Attacks("poison", 95, 100, 16, True, "Sludge wave", True)
+Earthpower = Attacks("ground", 90, 100, 16, False, "Earth power", False)
+Thunderbolt = Attacks("electric", 90, 100, 24, True, "Thunderbolt", True)
+Roost = Attacks("flying", 0, 100, 10, True, "Roost", True)
+Flamethrower = Attacks("fire", 90, 100, 15, True, "Flamethrower", True)
+Bravebird = Attacks("flying", 120, 100, 15, False, "Brave bird", True)
+Will_o_wisp = Attacks("fire", 0, 90, 8, True, "Will-o-wisp", True)
 
 Showdown = tk.Tk()
 Showdown.title("Pykemon")
@@ -204,12 +224,13 @@ current2 = 0
 
 Mewtwo_sprite = tk.PhotoImage(file=r"C:\Users\messierj\OneDrive - Conseil scolaire Viamonde\Documents\Code projects\Python\Assets\Mewtwo.png")
 Nidoking_sprite = tk.PhotoImage(file=r"C:\Users\messierj\OneDrive - Conseil scolaire Viamonde\Documents\Code projects\Python\Assets\Nidoking.png")
+Moltres_sprite = tk.PhotoImage(file=r"C:\Users\messierj\OneDrive - Conseil scolaire Viamonde\Documents\Code projects\Python\Assets\Moltres.png")
 
 Mewtwo = Pokemon("psychic", " ", 109, 110, 90, 154, 90, 130, "Mewtwo", Psystrike, Icebeam, Fireblast, Shadowball, Mewtwo_sprite)
 Nidoking = Pokemon("poison","ground", 81, 102, 77, 85, 75, 85, "Nidoking", Sludgewave, Earthpower, Fireblast, Thunderbolt, Nidoking_sprite)
-test = Pokemon("fire", " ", 10, 10, 10, 10, 10, 10, "Test", Shadowball, Shadowball, Shadowball, Shadowball, Nidoking_sprite)
+Moltres = Pokemon("fire", "flying", 90, 100, 90, 125, 85, 90, "Moltres", Roost, Flamethrower, Bravebird, Will_o_wisp, Moltres_sprite)
 
-actingpokemon1 = [Mewtwo, test]
+actingpokemon1 = [Mewtwo, Moltres]
 actingpokemon2 = [Nidoking]
 
 Hp1 = tk.IntVar()
@@ -223,6 +244,9 @@ Hpdisplay1.grid(column=0, row=1, sticky=tk.W, padx=10, pady=1)
 
 Hpdisplay2 = tk.Label(Showdown, text=f"{actingpokemon2[current2].hp}")
 Hpdisplay2.grid(column=2, row=1, sticky=tk.W, padx=10, pady=1)
+
+turndisplay = tk.Label(Showdown, text=f"it is {turn}")
+turndisplay.grid(column=1, row=1, sticky=tk.W, padx=1, pady=1)
 
 Pokemondisplay1 = tk.Label(Showdown, text=actingpokemon1[current].name)
 Pokemondisplay1.grid(column=0, row=0, sticky=tk.W, padx=10, pady=1)
@@ -259,6 +283,29 @@ Pokemon2_attack_button3.grid(column= 2, row= 4, sticky=tk.W, padx=1, pady=1)
 
 Pokemon2_attack_button4= tk.Button(Showdown, text= f"{actingpokemon2[current2].move4.name}", command= lambda: attack_4(actingpokemon2[current2],actingpokemon1[current]))
 Pokemon2_attack_button4.grid(column= 3, row= 4, sticky=tk.W, padx=1, pady=1)
+
+def Turnmovedisable():
+    "Disables the moves of the inactive pokemon"
+    if turn == 0:
+        Pokemon2_attack_button.config(state= "disabled")
+        Pokemon2_attack_button2.config(state= "disabled")
+        Pokemon2_attack_button3.config(state= "disabled")
+        Pokemon2_attack_button4.config(state= "disabled")
+        Pokemon1_attack_button.config(command= lambda: attack_(actingpokemon1[current],actingpokemon2[current2]))
+        Pokemon1_attack_button1.config(command= lambda: attack_2(actingpokemon1[current],actingpokemon2[current2]))
+        Pokemon1_attack_button2.config(command= lambda: attack_3(actingpokemon1[current],actingpokemon2[current2]))
+        Pokemon1_attack_button3.config(command= lambda: attack_4(actingpokemon1[current],actingpokemon2[current2]))
+    else:
+        Pokemon2_attack_button.config(command= lambda: attack_(actingpokemon2[current2],actingpokemon1[current]))
+        Pokemon2_attack_button2.config(command= lambda: attack_2(actingpokemon2[current2],actingpokemon1[current]))
+        Pokemon2_attack_button3.config(command= lambda: attack_3(actingpokemon2[current2],actingpokemon1[current]))
+        Pokemon2_attack_button4.config(command= lambda: attack_4(actingpokemon2[current2],actingpokemon1[current]))
+        Pokemon1_attack_button.config(state= "disabled")
+        Pokemon1_attack_button1.config(state= "disabled")
+        Pokemon1_attack_button2.config(state= "disabled")
+        Pokemon1_attack_button3.config(state= "disabled")
+
+Turnmovedisable()
 
 test_button= tk.Button(Showdown, text= "switch", command= switch_1)
 test_button.grid()
