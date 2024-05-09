@@ -54,14 +54,13 @@ def calculateTypeBonus(attacker, defender):
     for modifier in Typeadvantage[attackType]:
         if modifier[0] in defenderTypes: 
             bonus *= modifier[1]
-            Message("Super\n evective!!")
 
     #Return the final boost
     return bonus
 
 class Pokemon():
     "Defines the pokemon object"
-    def __init__(self, type1, type2, hp, atk, deff, spatk, spdef, speed, name, move1, move2, move3, move4, sprite):
+    def __init__(self, type1, type2, hp, atk, deff, spatk, spdef, name, move1, move2, move3, move4, sprite):
         self.type1 = type1
         self.type2 = type2
         self.hp = (((2*hp + 31) * 100)/100) + 110
@@ -69,7 +68,6 @@ class Pokemon():
         self.deff = deff
         self.spatk = spatk
         self.spdef = spdef
-        self.speed = speed
         self.name = name
         self.move1 = move1
         self.move2 = move2
@@ -79,14 +77,13 @@ class Pokemon():
 
 class Attacks():
     "Defines the Attacks class"
-    def __init__(self, type_, power, acuracy, pp, special, name, second_effect):
+    def __init__(self, type_, power, acuracy, pp, special, name):
         self.type = type_
         self.power = power
         self.acuracy = acuracy
         self.pp = pp
         self.special = special
         self.name = name
-        self.second = second_effect
 
 def attack_(self, other):
     "Attack another pokemon with first move. First slot is the attacker and the second is the defender"
@@ -196,18 +193,15 @@ def Turnswitch():
         turn = 0
     Turnmovedisable()
 
-def Message(Message_):
-    "Changes the display with the agrument"
-    battle_message.config(text= f"{Message_}")
-
 def switch_1():
     "Switches the first pokemon"
     global current
-    current = 1
+    current =+ 1
     UpdateHP()
     UpdateMoves()
     UpdateName()
     Updatesprite()
+    UpdateSwitch_button()
 
 def UpdateHP():
     "Changes the displayed HP value of the pokemons"
@@ -263,17 +257,24 @@ def Updatesprite():
     Pokemon_sprite1.config(image=f"{actingpokemon1[current].sprite}")
     Pokemon_sprite2.config(image=f"{actingpokemon2[current2].sprite}")
 
-Psystrike = Attacks("psychic", 100, 100, 1, True, "Psystrike", False)
-Icebeam = Attacks("ice", 90, 100, 16, True, "Ice beam", True)
-Fireblast = Attacks("fire", 110, 85, 8, True, "Fire blast", True)
-Shadowball = Attacks("ghost", 80, 100, 24, True, "Shadow ball", False)
-Sludgewave = Attacks("poison", 95, 100, 16, True, "Sludge wave", True)
-Earthpower = Attacks("ground", 90, 100, 16, False, "Earth power", False)
-Thunderbolt = Attacks("electric", 90, 100, 24, True, "Thunderbolt", True)
-Roost = Attacks("flying", 0, 100, 10, True, "Roost", True)
-Flamethrower = Attacks("fire", 90, 100, 15, True, "Flamethrower", True)
-Bravebird = Attacks("flying", 120, 100, 15, False, "Brave bird", True)
-Will_o_wisp = Attacks("fire", 0, 90, 8, True, "Will-o-wisp", True)
+def UpdateSwitch_button():
+    "well.. what do you think it does?"
+    switch_button.config(image= actingpokemon1[current+1].sprite)
+
+Psystrike = Attacks("psychic", 100, 100, 16, True, "Psystrike")
+Icebeam = Attacks("ice", 90, 100, 16, True, "Ice beam")
+Fireblast = Attacks("fire", 110, 85, 8, True, "Fire blast")
+Shadowball = Attacks("ghost", 80, 100, 24, True, "Shadow ball")
+Sludgewave = Attacks("poison", 95, 100, 16, True, "Sludge wave")
+Earthpower = Attacks("ground", 90, 100, 16, False, "Earth power")
+Thunderbolt = Attacks("electric", 90, 100, 24, True, "Thunderbolt")
+Firepunch = Attacks("fire", 75, 100, 15, False, "Fire punch")
+Flamethrower = Attacks("fire", 90, 100, 15, True, "Flamethrower")
+Bravebird = Attacks("flying", 120, 100, 15, False, "Brave bird")
+Hurricane = Attacks("flying", 110, 70, 16, True, "Hurricane")
+Outrage = Attacks("dragon", 120, 100, 10, False, "Outrage")
+Extremespeed = Attacks("normal", 80, 100, 5, False, "Extreme Speed")
+Earthquake = Attacks("ground", 100, 100, 10, False, "Earthquake")
 
 Showdown = tk.Tk()
 Showdown.title("Pykemon")
@@ -285,11 +286,12 @@ Mewtwo_sprite = tk.PhotoImage(file=r"C:\Users\messierj\OneDrive - Conseil scolai
 Nidoking_sprite = tk.PhotoImage(file=r"C:\Users\messierj\OneDrive - Conseil scolaire Viamonde\Documents\Code projects\Python\Assets\Nidoking.png")
 Moltres_sprite = tk.PhotoImage(file=r"C:\Users\messierj\OneDrive - Conseil scolaire Viamonde\Documents\Code projects\Python\Assets\Moltres.png")
 
-Mewtwo = Pokemon("psychic", " ", 109, 110, 90, 154, 90, 130, "Mewtwo", Psystrike, Icebeam, Fireblast, Shadowball, Mewtwo_sprite)
-Nidoking = Pokemon("poison","ground", 81, 102, 77, 85, 75, 85, "Nidoking", Sludgewave, Earthpower, Fireblast, Thunderbolt, Nidoking_sprite)
-Moltres = Pokemon("fire", "flying", 90, 100, 90, 125, 85, 90, "Moltres", Roost, Flamethrower, Bravebird, Will_o_wisp, Moltres_sprite)
+Mewtwo = Pokemon("psychic", " ", 109, 110, 90, 154, 90, "Mewtwo", Psystrike, Icebeam, Fireblast, Shadowball, Mewtwo_sprite)
+Nidoking = Pokemon("poison","ground", 81, 102, 77, 85, 75, "Nidoking", Sludgewave, Earthpower, Fireblast, Thunderbolt, Nidoking_sprite)
+Moltres = Pokemon("fire", "flying", 90, 100, 90, 125, 85, "Moltres", Firepunch, Flamethrower, Bravebird, Fireblast, Moltres_sprite)
+Dragonite = Pokemon("dragon", "flying", 91, 134, 95, 100, 100, "Dragonite", Outrage, Extremespeed, Firepunch, Earthquake)
 
-actingpokemon1 = [Mewtwo, Moltres]
+actingpokemon1 = [Mewtwo, Moltres, Dragonite]
 actingpokemon2 = [Nidoking]
 
 Hp1 = tk.IntVar()
@@ -339,10 +341,6 @@ Pokemon2_attack_button3.grid(column= 2, row= 4, sticky=tk.W, padx=1, pady=1)
 
 Pokemon2_attack_button4= tk.Button(Showdown, text= f"{actingpokemon2[current2].move4.name}", command= lambda: attack_4(actingpokemon2[current2],actingpokemon1[current]))
 Pokemon2_attack_button4.grid(column= 3, row= 4, sticky=tk.W, padx=1, pady=1)
-
-battle_message = tk.Label(Showdown, text= "")
-battle_message.grid(column= 1, row= 5, sticky=tk.W, padx= 1, pady=160)
-
 
 def Turnmovedisable():
     "Disables the moves of the inactive pokemon"
@@ -433,8 +431,8 @@ def Turnmovedisable():
 
 Turnmovedisable()
 
-test_button= tk.Button(Showdown, text= "switch", command= switch_1)
-test_button.grid()
+switch_button= tk.Button(Showdown, image= actingpokemon1[current+1].sprite, command= switch_1)
+switch_button.grid()
 
 window_width = 500
 window_height = 500
