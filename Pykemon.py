@@ -1,8 +1,13 @@
 #a simple pokemon battler for python
-#for now its just two pokemon
 import tkinter as tk
 from tkinter import ttk
 import random
+import os
+
+#if current == 6 and [pokemon6].hp > 0:
+#   win(current)
+
+assetpath = f"{os.path.dirname(__file__)}\\Assets"
 
 #all type advantages
 Typeadvantage = {
@@ -15,8 +20,8 @@ Typeadvantage = {
     "fighting": (("normal", 2), ("ice", 2), ("poison", 0.5), ("flying", 0.5), ("psychic", 0.5), ("bug", 0.5), ("rock", 2), ("ghost", 0), ("dark", 2), ("steel", 2), ("fairy", 0.5)),
     "poison": (("grass", 2), ("poison", 0.5), ("ground", 0.5), ("rock", 0.5), ("ghost", 0.5), ("steel", 0), ("fairy", 2)),
     "ground": (("fire", 2), ("grass", 0.5), ("electric", 2), ("poison", 2), ("flying", 0), ("bug", 0.5), ("rock", 2), ("steel", 2)),
-    "flying": (("grass", 2), ("electric", 0.5), ("fighting", 2), ("bug", 2), ("rock", 0.5), ("steel", 0.5)),
-    "psychic": (("fighting", 2), ("poison", 2), ("psychic", 0.5), ("dark", 0), ("steel", 0.5)),
+    "flying": (("grass", 0.5), ("electric", 2), ("fighting", 0.5), ("bug", 0.5), ("rock", 2), ("steel", 0.5), ("ground", 0)),
+    "psychic": (("fighting", 0.5), ("poison", 2), ("psychic", 0.5), ("dark", 2), ("steel", 0.5)),
     "bug": (("fire", 0.5), ("grass", 2), ("fighting", 0.5), ("poison", 0.5), ("flying", 0.5), ("psychic", 2), ("ghost", 0.5), ("dark", 2), ("steel", 0.5), ("fairy", 0.5)),
     "rock": (("fire", 2), ("ice", 2), ("fighting", 0.5), ("ground", 0.5), ("flying", 2), ("bug", 2), ("steel", 0.5)),
     "ghost": (("normal", 0), ("psychic", 2), ("ghost", 2), ("dark", 0.5)),
@@ -29,6 +34,9 @@ Typeadvantage = {
 
 turn = 0
 
+playerone = "DO NOT REUSE THIS STRING NUMBER 1"
+playertwo = "DO NOT REUSE THIS STRING NUMBER 2"
+
 onemove1 = True
 onemove2 = True
 onemove3 = True
@@ -39,10 +47,11 @@ twomove3 = True
 twomove4 = True
 
 #Calcuate type bonuses
-def calculateTypeBonus(attacker, defender):
+def calculateTypeBonus(attacker, defender, movenumber):
     "Calcuates the types bonuses between two pokémon. Returns the bonus"
     #Type of attack
-    attackType = attacker.move1.type
+    
+    attackType = attacker.moves[movenumber].type
     
     #Types of defending pokemon
     defenderTypes = defender.type1, defender.type2
@@ -60,19 +69,16 @@ def calculateTypeBonus(attacker, defender):
 
 class Pokemon():
     "Defines the pokemon object"
-    def __init__(self, type1, type2, hp, atk, deff, spatk, spdef, name, move1, move2, move3, move4, sprite):
+    def __init__(self, type1, type2, hp, atk, deff, spatk, spdef, name, moves, sprite):
         self.type1 = type1
         self.type2 = type2
         self.hp = (((2*hp + 31) * 100)/100) + 110
-        self.atk = atk
+        self.atk = (1.5*atk)
         self.deff = deff
-        self.spatk = spatk
+        self.spatk = (1.5*spatk)
         self.spdef = spdef
         self.name = name
-        self.move1 = move1
-        self.move2 = move2
-        self.move3 = move3
-        self.move4 = move4
+        self.moves = moves
         self.sprite = sprite
 
 class Attacks():
@@ -85,104 +91,39 @@ class Attacks():
         self.special = special
         self.name = name
 
-def attack_(self, other):
+def attack_(self, other, movenumber):
     "Attack another pokemon with first move. First slot is the attacker and the second is the defender"
     #Critical hit (1/24 chance)
     critical = 1.5 if random.choice(f"{'0'*23}1") == "1" else 1
     #Random effect
     random_ = random.randint(85, 100) / 100
     #STAB bonus
-    stab = 1.5 if self.move1.type in self.type1 else 1
+    stab = 1.5 if self.moves[movenumber].type in self.type1 else 1
     #Type bonus
-    typeBonus = calculateTypeBonus(self, other)
+    typeBonus = calculateTypeBonus(self, other, 1)
     #Calculate damage
-    if self.move1.special == True:
-        other.hp -= round(((42 * self.move1.power * ((self.spatk / other.spdef))/2) / 50 + 2) * critical * random_ * stab * typeBonus)
-    else:
-        other.hp -= round(((42 * self.move1.power * ((self.atk / other.deff))/2) / 50 + 2) * critical * random_ * stab * typeBonus)
+    if random.randint(1, 100) <= self.moves[movenumber].acuracy:
+        if self.moves[movenumber].special == True:
+            other.hp -= round(((42 * self.moves[movenumber].power * (self.spatk / other.spdef) / 50 + 2) * critical * random_ * stab * typeBonus) / 2)
+        else:
+            other.hp -= round(((42 * self.moves[movenumber].power * (self.atk / other.deff) / 50 + 2) * critical * random_ * stab * typeBonus) / 2)
     
     #Set health to zero if their health goes below zero
     if other.hp <= 0: other.hp = 0
 
-    self.move1.pp -= 1
+    self.moves[movenumber].pp -= 1
     
     UpdateHP()
     Turnswitch()
     movedisable(self)
-
-def attack_2(self, other):
-    "Attack another pokemon with second move. First slot is the attacker and the second is the defender"
-    #Critical hit (1/24 chance)
-    critical = 1.5 if random.choice(f"{'0'*23}1") == "1" else 1
-    #Random effect
-    random_ = random.randint(85, 100) / 100
-    #STAB bonus
-    stab = 1.5 if self.move2.type in self.type1 else 1
-    #Type bonus
-    typeBonus = calculateTypeBonus(self, other)
-    #Calculate damage
-    if self.move2.special == True:
-         other.hp -= round(((42 * self.move2.power * ((self.spatk / other.spdef))/2) / 50 + 2) * critical * random_ * stab * typeBonus)
+    if current2 == 2 and actingpokemon2[current2].hp == 0:
+        win(playerone)
     else:
-        other.hp -= round(((42 * self.move2.power * ((self.atk / other.deff))/2) / 50 + 2) * critical * random_ * stab * typeBonus)
-    
-    #Set health to zero if their health goes below zero
-    if other.hp <= 0: other.hp = 0
-
-    self.move2.pp -= 1
-
-    UpdateHP()
-    Turnswitch()
-    movedisable(self)
-
-def attack_3(self, other):
-    "Attack another pokemon with third move. First slot is the attacker and the second is the defender"
-    #Critical hit (1/24 chance)
-    critical = 1.5 if random.choice(f"{'0'*23}1") == "1" else 1
-    #Random effect
-    random_ = random.randint(85, 100) / 100
-    #STAB bonus
-    stab = 1.5 if self.move3.type in self.type1 else 1
-    #Type bonus
-    typeBonus = calculateTypeBonus(self, other)
-    #Calculate damage
-    if self.move3.special == True:
-         other.hp -= round(((42 * self.move3.power * ((self.spatk / other.spdef))/2) / 50 + 2) * critical * random_ * stab * typeBonus)
+        deathswitch()
+    if current == 1 and actingpokemon1[current].hp == 0:
+        win(playertwo)
     else:
-        other.hp -= round(((42 * self.move3.power * ((self.atk / other.deff))/2) / 50 + 2) * critical * random_ * stab * typeBonus)
-    #Set health to zero if their health goes below zero
-    if other.hp <= 0: other.hp = 0
-
-    self.move3.pp -= 1
-
-    UpdateHP()
-    Turnswitch()
-    movedisable(self)
-
-def attack_4(self, other):
-    "Attack another pokemon with fourth move. First slot is the attacker and the second is the defender"
-    #Critical hit (1/24 chance)
-    critical = 1.5 if random.choice(f"{'0'*23}1") == "1" else 1
-    #Random effect
-    random_ = random.randint(85, 100) / 100
-    #STAB bonus
-    stab = 1.5 if self.move4.type in self.type1 else 1
-    #Type bonus
-    typeBonus = calculateTypeBonus(self, other)
-    #Calculate damage
-    if self.move4.special == True:
-         other.hp -= round(((42 * self.move4.power * ((self.spatk / other.spdef))/2) / 50 + 2) * critical * random_ * stab * typeBonus)
-    else:
-        other.hp -= round(((42 * self.move4.power * ((self.atk / other.deff))/2) / 50 + 2) * critical * random_ * stab * typeBonus)
-    
-    #Set health to zero if their health goes below zero
-    if other.hp <= 0: other.hp = 0
-
-    self.move4.pp -= 1
-
-    UpdateHP()
-    Turnswitch()
-    movedisable(self)
+        deathswitch()
 
 def Turnswitch():
     "Changes the turn"
@@ -201,7 +142,15 @@ def switch_1():
     UpdateMoves()
     UpdateName()
     Updatesprite()
-    UpdateSwitch_button()
+
+def switch_2():
+    "Switches the second pokemon"
+    global current2
+    current2 =+ 1
+    UpdateHP()
+    UpdateMoves()
+    UpdateName()
+    Updatesprite()
 
 def UpdateHP():
     "Changes the displayed HP value of the pokemons"
@@ -210,40 +159,40 @@ def UpdateHP():
 
 def UpdateMoves():
     "Updates the moves of the pokemon"
-    Pokemon1_attack_button.config(text=f"{actingpokemon1[current].move1.name}",command= lambda: attack_(actingpokemon1[current], actingpokemon2[current2]))
-    Pokemon1_attack_button1.config(text=f"{actingpokemon1[current].move2.name}",command= lambda: attack_2(actingpokemon1[current], actingpokemon2[current2]))
-    Pokemon1_attack_button2.config(text=f"{actingpokemon1[current].move3.name}",command= lambda: attack_3(actingpokemon1[current], actingpokemon2[current2]))
-    Pokemon1_attack_button3.config(text=f"{actingpokemon1[current].move4.name}",command= lambda: attack_4(actingpokemon1[current], actingpokemon2[current2]))
-    Pokemon2_attack_button.config(text=f"{actingpokemon2[current2].move1.name}", command= lambda: attack_(actingpokemon2[current2],actingpokemon1[current]))
-    Pokemon2_attack_button2.config(text=f"{actingpokemon2[current2].move2.name}", command= lambda: attack_2(actingpokemon2[current2],actingpokemon1[current]))
-    Pokemon2_attack_button3.config(text=f"{actingpokemon2[current2].move3.name}", command= lambda: attack_3(actingpokemon2[current2],actingpokemon1[current]))
-    Pokemon2_attack_button4.config(text=f"{actingpokemon2[current2].move4.name}", command= lambda: attack_4(actingpokemon2[current2],actingpokemon1[current]))
+    Pokemon1_attack_button.config(text=f"{actingpokemon1[current].moves[0].name}",command= lambda: attack_(actingpokemon1[current], actingpokemon2[current2],0))
+    Pokemon1_attack_button1.config(text=f"{actingpokemon1[current].moves[1].name}",command= lambda: attack_(actingpokemon1[current], actingpokemon2[current2],1))
+    Pokemon1_attack_button2.config(text=f"{actingpokemon1[current].moves[2].name}",command= lambda: attack_(actingpokemon1[current], actingpokemon2[current2],2))
+    Pokemon1_attack_button3.config(text=f"{actingpokemon1[current].moves[3].name}",command= lambda: attack_(actingpokemon1[current], actingpokemon2[current2],3))
+    Pokemon2_attack_button.config(text=f"{actingpokemon2[current2].moves[0].name}", command= lambda: attack_(actingpokemon2[current2],actingpokemon1[current],0))
+    Pokemon2_attack_button2.config(text=f"{actingpokemon2[current2].moves[1].name}", command= lambda: attack_(actingpokemon2[current2],actingpokemon1[current],1))
+    Pokemon2_attack_button3.config(text=f"{actingpokemon2[current2].moves[2].name}", command= lambda: attack_(actingpokemon2[current2],actingpokemon1[current],2))
+    Pokemon2_attack_button4.config(text=f"{actingpokemon2[current2].moves[3].name}", command= lambda: attack_(actingpokemon2[current2],actingpokemon1[current],3))
 
 def movedisable(self):
     "disables the pokemons moves"
     global onemove1, onemove2, onemove3, onemove4, twomove1, twomove2, twomove3, twomove4
-    if self.move1.pp == 0 and actingpokemon1[current] == self:
+    if self.moves[0].pp == 0 and actingpokemon1[current] == self:
         onemove1 = False
         Pokemon1_attack_button.config(state= "disabled")
-    if self.move2.pp == 0 and actingpokemon1[current] == self:
+    if self.moves[1].pp == 0 and actingpokemon1[current] == self:
         onemove2 = False
         Pokemon1_attack_button1.config(state= "disabled")
-    if self.move3.pp == 0 and actingpokemon1[current] == self:
+    if self.moves[2].pp == 0 and actingpokemon1[current] == self:
         onemove3 = False
         Pokemon1_attack_button2.config(state= "disabled")
-    if self.move4.pp == 0 and actingpokemon1[current] == self:
+    if self.moves[3].pp == 0 and actingpokemon1[current] == self:
         onemove4 = False
         Pokemon1_attack_button3.config(state= "disabled")
-    if self.move1.pp == 0 and actingpokemon2[current2] == self:
+    if self.moves[0].pp == 0 and actingpokemon2[current2] == self:
         twomove1 = False
         Pokemon2_attack_button.config(state= "disabled")
-    if self.move2.pp == 0 and actingpokemon2[current2] == self:
+    if self.moves[1].pp == 0 and actingpokemon2[current2] == self:
         twomove2 = False
         Pokemon2_attack_button2.config(state= "disabled")
-    if self.move3.pp == 0 and actingpokemon2[current2] == self:
+    if self.moves[2].pp == 0 and actingpokemon2[current2] == self:
         twomove3 = False
         Pokemon2_attack_button3.config(state= "disabled")
-    if self.move4.pp == 0 and actingpokemon2[current2] == self:
+    if self.moves[3].pp == 0 and actingpokemon2[current2] == self:
         twomove4 = False
         Pokemon2_attack_button4.config(state= "disabled")
         
@@ -257,9 +206,23 @@ def Updatesprite():
     Pokemon_sprite1.config(image=f"{actingpokemon1[current].sprite}")
     Pokemon_sprite2.config(image=f"{actingpokemon2[current2].sprite}")
 
-def UpdateSwitch_button():
-    "well.. what do you think it does?"
-    switch_button.config(image= actingpokemon1[current+1].sprite)
+def win(winner):
+    "destroys the wigets and show the winner"
+    for wiget in Showdown.winfo_children():
+        wiget.destroy()
+    if winner == playerone:
+        winnerlabel = ttk.Label(Showdown, text="Player 1 won!!",font=("Arial", 36))
+        winnerlabel.grid()
+    elif winner == playertwo:
+        winnerlabel = ttk.Label(Showdown, text="Player 2 won!!",font=("Arial", 36))
+        winnerlabel.grid()
+
+def deathswitch():
+    "Switches when the acting pokemon dies"
+    if actingpokemon1[current].hp == 0:
+        switch_1()
+    elif actingpokemon2[current2].hp == 0:
+        switch_2()
 
 Psystrike = Attacks("psychic", 100, 100, 16, True, "Psystrike")
 Icebeam = Attacks("ice", 90, 100, 16, True, "Ice beam")
@@ -275,6 +238,9 @@ Hurricane = Attacks("flying", 110, 70, 16, True, "Hurricane")
 Outrage = Attacks("dragon", 120, 100, 10, False, "Outrage")
 Extremespeed = Attacks("normal", 80, 100, 5, False, "Extreme Speed")
 Earthquake = Attacks("ground", 100, 100, 10, False, "Earthquake")
+Flashcannon = Attacks("steel", 80, 100, 10, True, "Flash cannon")
+Steelbeam = Attacks("steel", 140, 95, 5, True, "Steel beam")
+Closecombat = Attacks("fighting", 120, 100, 5, False, "Close combat")
 
 Showdown = tk.Tk()
 Showdown.title("Pykemon")
@@ -282,23 +248,20 @@ Showdown.title("Pykemon")
 current = 0
 current2 = 0
 
-Mewtwo_sprite = tk.PhotoImage(file=r"C:\Users\messierj\OneDrive - Conseil scolaire Viamonde\Documents\Code projects\Python\Assets\Mewtwo.png")
-Nidoking_sprite = tk.PhotoImage(file=r"C:\Users\messierj\OneDrive - Conseil scolaire Viamonde\Documents\Code projects\Python\Assets\Nidoking.png")
-Moltres_sprite = tk.PhotoImage(file=r"C:\Users\messierj\OneDrive - Conseil scolaire Viamonde\Documents\Code projects\Python\Assets\Moltres.png")
+Mewtwo_sprite = tk.PhotoImage(file=f"{assetpath}\\Mewtwo.png")
+Nidoking_sprite = tk.PhotoImage(file=f"{assetpath}\\Nidoking.png")
+Moltres_sprite = tk.PhotoImage(file=f"{assetpath}\\Moltres.png")
+Dragonite_sprite = tk.PhotoImage(file=f"{assetpath}\\dragonite.png")
+Aegislash_sprite = tk.PhotoImage(file=f"{assetpath}\\aegislash.png")
 
-Mewtwo = Pokemon("psychic", " ", 109, 110, 90, 154, 90, "Mewtwo", Psystrike, Icebeam, Fireblast, Shadowball, Mewtwo_sprite)
-Nidoking = Pokemon("poison","ground", 81, 102, 77, 85, 75, "Nidoking", Sludgewave, Earthpower, Fireblast, Thunderbolt, Nidoking_sprite)
-Moltres = Pokemon("fire", "flying", 90, 100, 90, 125, 85, "Moltres", Firepunch, Flamethrower, Bravebird, Fireblast, Moltres_sprite)
-Dragonite = Pokemon("dragon", "flying", 91, 134, 95, 100, 100, "Dragonite", Outrage, Extremespeed, Firepunch, Earthquake)
+Mewtwo = Pokemon("psychic", " ", 109, 110, 90, 154, 90, "Mewtwo", [Psystrike, Icebeam, Fireblast, Shadowball], Mewtwo_sprite)
+Nidoking = Pokemon("poison","ground", 81, 102, 77, 85, 75, "Nidoking", [Sludgewave, Earthpower, Fireblast, Thunderbolt], Nidoking_sprite)
+Moltres = Pokemon("fire", "flying", 90, 100, 90, 125, 85, "Moltres", [Firepunch, Flamethrower, Bravebird, Fireblast], Moltres_sprite)
+Dragonite = Pokemon("dragon", "flying", 91, 134, 95, 100, 100, "Dragonite", [Outrage, Extremespeed, Firepunch, Earthquake], Dragonite_sprite)
+Aegislash = Pokemon("steel", "ghost", 60, 70, 70, 70, 70, "Aegislash", [Shadowball, Flashcannon, Steelbeam, Closecombat], Aegislash_sprite)
 
-actingpokemon1 = [Mewtwo, Moltres, Dragonite]
-actingpokemon2 = [Nidoking]
-
-Hp1 = tk.IntVar()
-Hp1.set(actingpokemon1[current].hp)
-
-Hp2 = tk.IntVar()
-Hp2.set(actingpokemon2[current2].hp)
+actingpokemon1 = [Mewtwo, Moltres]
+actingpokemon2 = [Nidoking, Dragonite, Aegislash]
 
 Hpdisplay1 = tk.Label(Showdown, text=f"{actingpokemon1[current].hp}")
 Hpdisplay1.grid(column=0, row=1, sticky=tk.W, padx=10, pady=1)
@@ -318,28 +281,28 @@ Pokemon_sprite1.grid(column=0, row=2, sticky=tk.W, padx=10, pady=1)
 Pokemon_sprite2 = ttk.Label(Showdown, image= actingpokemon2[current2].sprite, padding= 10)
 Pokemon_sprite2.grid(column=2, row= 2, sticky=tk.W, padx=10, pady=1)
 
-Pokemon1_attack_button= tk.Button(Showdown, text= f"{actingpokemon1[current].move1.name}", command=lambda: attack_(actingpokemon1[current], actingpokemon2[current2]))
+Pokemon1_attack_button= tk.Button(Showdown, text= f"{actingpokemon1[current].moves[0].name}", command=lambda: attack_(actingpokemon1[current], actingpokemon2[current2],0))
 Pokemon1_attack_button.grid(column=0, row=3, sticky=tk.W, padx=100, pady=1)
 
-Pokemon1_attack_button1= tk.Button(Showdown, text= f"{actingpokemon1[current].move2.name}", command= lambda: attack_2(actingpokemon1[current],actingpokemon2[current2]))
+Pokemon1_attack_button1= tk.Button(Showdown, text= f"{actingpokemon1[current].moves[1].name}", command= lambda: attack_(actingpokemon1[current],actingpokemon2[current2],1))
 Pokemon1_attack_button1.grid(column=0, row=4, sticky=tk.W, padx=100, pady=1)
 
-Pokemon1_attack_button2= tk.Button(Showdown, text= f"{actingpokemon1[current].move3.name}", command= lambda: attack_3(actingpokemon1[current],actingpokemon2[current2]))
+Pokemon1_attack_button2= tk.Button(Showdown, text= f"{actingpokemon1[current].moves[2].name}", command= lambda: attack_(actingpokemon1[current],actingpokemon2[current2],2))
 Pokemon1_attack_button2.grid(column=0, row=3, sticky=tk.W, padx=1, pady=1)
 
-Pokemon1_attack_button3= tk.Button(Showdown, text= f"{actingpokemon1[current].move4.name}", command= lambda: attack_3(actingpokemon1[current],actingpokemon2[current2]))
+Pokemon1_attack_button3= tk.Button(Showdown, text= f"{actingpokemon1[current].moves[3].name}", command= lambda: attack_(actingpokemon1[current],actingpokemon2[current2],3))
 Pokemon1_attack_button3.grid(column=0, row=4, sticky=tk.W, padx=1, pady=1)
 
-Pokemon2_attack_button= tk.Button(Showdown, text= f"{actingpokemon2[current2].move1.name}", command= lambda: attack_(actingpokemon2[current2],actingpokemon1[current]))
+Pokemon2_attack_button= tk.Button(Showdown, text= f"{actingpokemon2[current2].moves[0].name}", command= lambda: attack_(actingpokemon2[current2],actingpokemon1[current],0))
 Pokemon2_attack_button.grid(column= 2, row= 3, sticky=tk.W, padx=1, pady=1)
 
-Pokemon2_attack_button2= tk.Button(Showdown, text= f"{actingpokemon2[current2].move2.name}", command= lambda: attack_2(actingpokemon2[current2],actingpokemon1[current]))
+Pokemon2_attack_button2= tk.Button(Showdown, text= f"{actingpokemon2[current2].moves[1].name}", command= lambda: attack_(actingpokemon2[current2],actingpokemon1[current],1))
 Pokemon2_attack_button2.grid(column= 3, row= 3, sticky=tk.W, padx=1, pady=1)
 
-Pokemon2_attack_button3= tk.Button(Showdown, text= f"{actingpokemon2[current2].move3.name}", command= lambda: attack_3(actingpokemon2[current2],actingpokemon1[current]))
+Pokemon2_attack_button3= tk.Button(Showdown, text= f"{actingpokemon2[current2].moves[2].name}", command= lambda: attack_(actingpokemon2[current2],actingpokemon1[current],2))
 Pokemon2_attack_button3.grid(column= 2, row= 4, sticky=tk.W, padx=1, pady=1)
 
-Pokemon2_attack_button4= tk.Button(Showdown, text= f"{actingpokemon2[current2].move4.name}", command= lambda: attack_4(actingpokemon2[current2],actingpokemon1[current]))
+Pokemon2_attack_button4= tk.Button(Showdown, text= f"{actingpokemon2[current2].moves[3].name}", command= lambda: attack_(actingpokemon2[current2],actingpokemon1[current],3))
 Pokemon2_attack_button4.grid(column= 3, row= 4, sticky=tk.W, padx=1, pady=1)
 
 def Turnmovedisable():
@@ -431,9 +394,6 @@ def Turnmovedisable():
 
 Turnmovedisable()
 
-switch_button= tk.Button(Showdown, image= actingpokemon1[current+1].sprite, command= switch_1)
-switch_button.grid()
-
 window_width = 500
 window_height = 500
 
@@ -449,4 +409,4 @@ center_y = int(screen_height/2 - window_height / 2)
 Showdown.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
 Showdown.resizable(False, False)
 
-tk.mainloop()
+Showdown.mainloop()
