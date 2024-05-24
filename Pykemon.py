@@ -1,4 +1,3 @@
-#a simple pokemon battler for python
 import tkinter as tk
 from tkinter import ttk
 import random
@@ -113,7 +112,7 @@ def attack_(self, other, movenumber):
     if playertwopokemon == 2 and actingpokemon2[playertwopokemon].hp == 0:
         win(playerone)
     else:
-        if playeronepokemon == 1 and actingpokemon1[playeronepokemon].hp == 0:
+        if playeronepokemon == 2 and actingpokemon1[playeronepokemon].hp == 0:
             win(playertwo)
         else:
             deathswitch()
@@ -249,14 +248,16 @@ Nidoking_sprite = tk.PhotoImage(file=f"{assetpath}\\Nidoking.png")
 Moltres_sprite = tk.PhotoImage(file=f"{assetpath}\\Moltres.png")
 Dragonite_sprite = tk.PhotoImage(file=f"{assetpath}\\dragonite.png")
 Aegislash_sprite = tk.PhotoImage(file=f"{assetpath}\\aegislash.png")
+Steelix_sprite = tk.PhotoImage(file=f"{assetpath}\\Steelix.png")
 
 Mewtwo = Pokemon("psychic", " ", 109, 110, 90, 154, 90, "Mewtwo", [Psystrike, Icebeam, Fireblast, Shadowball], Mewtwo_sprite)
 Nidoking = Pokemon("poison","ground", 81, 102, 77, 85, 75, "Nidoking", [Sludgewave, Earthpower, Fireblast, Thunderbolt], Nidoking_sprite)
 Moltres = Pokemon("fire", "flying", 90, 100, 90, 125, 85, "Moltres", [Firepunch, Flamethrower, Bravebird, Fireblast], Moltres_sprite)
 Dragonite = Pokemon("dragon", "flying", 91, 134, 95, 100, 100, "Dragonite", [Outrage, Extremespeed, Firepunch, Earthquake], Dragonite_sprite)
 Aegislash = Pokemon("steel", "ghost", 60, 70, 70, 70, 70, "Aegislash", [Shadowball, Flashcannon, Steelbeam, Closecombat], Aegislash_sprite)
+Steelix = Pokemon("steel", "ground", 75, 85, 200, 55, 65, "Steelix", [Earthpower, Earthquake, Steelbeam, Flashcannon], Steelix_sprite)
 
-actingpokemon1 = [Mewtwo, Moltres]
+actingpokemon1 = [Mewtwo, Moltres, Steelix]
 actingpokemon2 = [Nidoking, Dragonite, Aegislash]
 
 Hpdisplay1 = tk.Label(Showdown, text=f"{actingpokemon1[playeronepokemon].hp}")
