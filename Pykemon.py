@@ -5,8 +5,11 @@ import os
 
 assetpath = f"{os.path.dirname(__file__)}\\Assets"
 
+#TODO fix type immunity
+
 #all type advantages
 Typeadvantage = {
+    #defender    attacker
     "normal": (("rock", 0.5), ("ghost", 0), ("steel", 0.5)),
     "fire": (("fire", 0.5), ("water", 0.5), ("grass", 2), ("ice", 2), ("bug", 2), ("rock", 0.5), ("dragon", 0.5), ("steel", 2)),
     "water": (("fire", 2), ("water", 0.5), ("grass", 0.5), ("ground", 2), ("rock", 2), ("dragon", 0.5)),
@@ -16,7 +19,7 @@ Typeadvantage = {
     "fighting": (("normal", 2), ("ice", 2), ("poison", 0.5), ("flying", 0.5), ("psychic", 0.5), ("bug", 0.5), ("rock", 2), ("ghost", 0), ("dark", 2), ("steel", 2), ("fairy", 0.5)),
     "poison": (("grass", 2), ("poison", 0.5), ("ground", 0.5), ("rock", 0.5), ("ghost", 0.5), ("steel", 0), ("fairy", 2)),
     "ground": (("fire", 2), ("grass", 0.5), ("electric", 2), ("poison", 2), ("flying", 0), ("bug", 0.5), ("rock", 2), ("steel", 2)),
-    "flying": (("grass", 0.5), ("electric", 2), ("fighting", 0.5), ("bug", 0.5), ("rock", 2), ("steel", 0.5), ("ground", 0)),
+    "flying": (("grass", 0.5), ("electric", 2), ("fighting", 0.5), ("bug", 0.5), ("rock", 2), ("steel", 0.5)),
     "psychic": (("fighting", 0.5), ("poison", 2), ("psychic", 0.5), ("dark", 2), ("steel", 0.5)),
     "bug": (("fire", 0.5), ("grass", 2), ("fighting", 0.5), ("poison", 0.5), ("flying", 0.5), ("psychic", 2), ("ghost", 0.5), ("dark", 2), ("steel", 0.5), ("fairy", 0.5)),
     "rock": (("fire", 2), ("ice", 2), ("fighting", 0.5), ("ground", 0.5), ("flying", 2), ("bug", 2), ("steel", 0.5)),
@@ -25,7 +28,7 @@ Typeadvantage = {
     "dark": (("fighting", 0.5), ("psychic", 2), ("ghost", 2), ("dark", 0.5), ("fairy", 0.5)),
     "steel": (("fire", 0.5), ("water", 0.5), ("electric", 0.5), ("ice", 2), ("rock", 2), ("steel", 0.5), ("fairy", 2)),
     "fairy": (("fire", 0.5), ("fighting", 2), ("poison", 0.5), ("dragon", 2), ("dark", 2), ("steel", 0.5)),
-    " ":()
+    " " : ()
 }
 
 turn = 0
@@ -50,7 +53,7 @@ def calculateTypeBonus(attacker, defender, movenumber):
     attackType = attacker.moves[movenumber].type
     
     #Types of defending pokemon
-    defenderTypes = defender.type1, defender.type2
+    defenderTypes = (defender.type1, defender.type2)
 
     #Type bonus multiplier
     bonus = 1
@@ -96,7 +99,7 @@ def attack_(self, other, movenumber):
     #STAB bonus
     stab = 1.5 if self.moves[movenumber].type in self.type1 else 1
     #Type bonus
-    typeBonus = calculateTypeBonus(self, other, 1)
+    typeBonus = calculateTypeBonus(self, other, movenumber)
     #Calculate damage
     if random.randint(1, 100) <= self.moves[movenumber].acuracy:
         if self.moves[movenumber].special == True:
@@ -109,10 +112,10 @@ def attack_(self, other, movenumber):
 
     self.moves[movenumber].pp -= 1
     
-    if playertwopokemon == 2 and actingpokemon2[playertwopokemon].hp == 0:
+    if playertwopokemon == 3 and actingpokemon2[playertwopokemon].hp == 0:
         win(playerone)
     else:
-        if playeronepokemon == 2 and actingpokemon1[playeronepokemon].hp == 0:
+        if playeronepokemon == 3 and actingpokemon1[playeronepokemon].hp == 0:
             win(playertwo)
         else:
             deathswitch()
@@ -206,11 +209,11 @@ def win(winner):
     for wiget in Showdown.winfo_children():
         wiget.destroy()
     if winner == playerone:
-        winnerlabel = ttk.Label(Showdown, text="Player 1 won!!",font=("Arial", 36))
-        winnerlabel.grid()
+        winnerlabel = ttk.Label(Showdown, text="Player 1 won!",font=("Arial", 36))
+        winnerlabel.grid(column= 1, row= 0, padx=100, pady= 200)
     elif winner == playertwo:
-        winnerlabel = ttk.Label(Showdown, text="Player 2 won!!",font=("Arial", 36))
-        winnerlabel.grid()
+        winnerlabel = ttk.Label(Showdown, text="Player 2 won!",font=("Arial", 36))
+        winnerlabel.grid(column= 1, row= 0, padx=100, pady= 200)
 
 def deathswitch():
     "Switches when the acting pokemon dies"
@@ -236,6 +239,10 @@ Earthquake = Attacks("ground", 100, 100, 10, False, "Earthquake")
 Flashcannon = Attacks("steel", 80, 100, 10, True, "Flash cannon")
 Steelbeam = Attacks("steel", 140, 95, 5, True, "Steel beam")
 Closecombat = Attacks("fighting", 120, 100, 5, False, "Close combat")
+StoneEdge = Attacks("rock", 100, 80, 5, False, "Stone Edge")
+AquaJet = Attacks("water", 40, 100, 20, False, "Aqua Jet")
+FreezDry = Attacks("ice", 70, 100, 20, True, "Freeze-dry")
+Moonblast = Attacks("fairy", 95, 100, 15, True, "Moon blast")
 
 Showdown = tk.Tk()
 Showdown.title("Pykemon")
@@ -249,6 +256,8 @@ Moltres_sprite = tk.PhotoImage(file=f"{assetpath}\\Moltres.png")
 Dragonite_sprite = tk.PhotoImage(file=f"{assetpath}\\dragonite.png")
 Aegislash_sprite = tk.PhotoImage(file=f"{assetpath}\\aegislash.png")
 Steelix_sprite = tk.PhotoImage(file=f"{assetpath}\\Steelix.png")
+Carracosta_sprite = tk.PhotoImage(file=f"{assetpath}\\Carracosta.png")
+Ninetalesalola_sprite = tk.PhotoImage(file=f"{assetpath}\\Ninetales_alola.png")
 
 Mewtwo = Pokemon("psychic", " ", 109, 110, 90, 154, 90, "Mewtwo", [Psystrike, Icebeam, Fireblast, Shadowball], Mewtwo_sprite)
 Nidoking = Pokemon("poison","ground", 81, 102, 77, 85, 75, "Nidoking", [Sludgewave, Earthpower, Fireblast, Thunderbolt], Nidoking_sprite)
@@ -256,20 +265,22 @@ Moltres = Pokemon("fire", "flying", 90, 100, 90, 125, 85, "Moltres", [Firepunch,
 Dragonite = Pokemon("dragon", "flying", 91, 134, 95, 100, 100, "Dragonite", [Outrage, Extremespeed, Firepunch, Earthquake], Dragonite_sprite)
 Aegislash = Pokemon("steel", "ghost", 60, 70, 70, 70, 70, "Aegislash", [Shadowball, Flashcannon, Steelbeam, Closecombat], Aegislash_sprite)
 Steelix = Pokemon("steel", "ground", 75, 85, 200, 55, 65, "Steelix", [Earthpower, Earthquake, Steelbeam, Flashcannon], Steelix_sprite)
+Carracosta = Pokemon("water", "rock", 75, 108, 133, 83, 65, "Carracosta", [StoneEdge, AquaJet, Earthquake, Icebeam], Carracosta_sprite)
+Ninetalesalola = Pokemon("ice", "fairy", 73, 67, 75, 81, 100, "Ninetails", [Icebeam, FreezDry, Moonblast, Extremespeed], Ninetalesalola_sprite)
 
-actingpokemon1 = [Mewtwo, Moltres, Steelix]
-actingpokemon2 = [Nidoking, Dragonite, Aegislash]
+actingpokemon1 = [Mewtwo, Moltres, Steelix, Ninetalesalola]
+actingpokemon2 = [Nidoking, Dragonite, Aegislash, Carracosta]
 
-Hpdisplay1 = tk.Label(Showdown, text=f"{actingpokemon1[playeronepokemon].hp}")
+Hpdisplay1 = ttk.Label(Showdown, text=f"{actingpokemon1[playeronepokemon].hp}")
 Hpdisplay1.grid(column=0, row=1, sticky=tk.W, padx=10, pady=1)
 
-Hpdisplay2 = tk.Label(Showdown, text=f"{actingpokemon2[playertwopokemon].hp}")
+Hpdisplay2 = ttk.Label(Showdown, text=f"{actingpokemon2[playertwopokemon].hp}")
 Hpdisplay2.grid(column=2, row=1, sticky=tk.W, padx=10, pady=1)
 
-Pokemondisplay1 = tk.Label(Showdown, text=actingpokemon1[playeronepokemon].name)
+Pokemondisplay1 = ttk.Label(Showdown, text=actingpokemon1[playeronepokemon].name)
 Pokemondisplay1.grid(column=0, row=0, sticky=tk.W, padx=10, pady=1)
 
-Pokemondisplay2 = tk.Label(Showdown, text= actingpokemon2[playertwopokemon].name)
+Pokemondisplay2 = ttk.Label(Showdown, text= actingpokemon2[playertwopokemon].name)
 Pokemondisplay2.grid(column=2, row=0, sticky=tk.W, padx=10, pady=1)
 
 Pokemon_sprite1 = ttk.Label(Showdown, image= actingpokemon1[playeronepokemon].sprite, padding= 10)
@@ -278,28 +289,28 @@ Pokemon_sprite1.grid(column=0, row=2, sticky=tk.W, padx=10, pady=1)
 Pokemon_sprite2 = ttk.Label(Showdown, image= actingpokemon2[playertwopokemon].sprite, padding= 10)
 Pokemon_sprite2.grid(column=2, row= 2, sticky=tk.W, padx=10, pady=1)
 
-Pokemon1_attack_button= tk.Button(Showdown, text= f"{actingpokemon1[playeronepokemon].moves[0].name}", command=lambda: attack_(actingpokemon1[playeronepokemon], actingpokemon2[playertwopokemon],0))
+Pokemon1_attack_button= ttk.Button(Showdown, text= f"{actingpokemon1[playeronepokemon].moves[0].name}", command=lambda: attack_(actingpokemon1[playeronepokemon], actingpokemon2[playertwopokemon],0))
 Pokemon1_attack_button.grid(column=0, row=3, sticky=tk.W, padx=100, pady=1)
 
-Pokemon1_attack_button1= tk.Button(Showdown, text= f"{actingpokemon1[playeronepokemon].moves[1].name}", command= lambda: attack_(actingpokemon1[playeronepokemon],actingpokemon2[playertwopokemon],1))
+Pokemon1_attack_button1= ttk.Button(Showdown, text= f"{actingpokemon1[playeronepokemon].moves[1].name}", command= lambda: attack_(actingpokemon1[playeronepokemon],actingpokemon2[playertwopokemon],1))
 Pokemon1_attack_button1.grid(column=0, row=4, sticky=tk.W, padx=100, pady=1)
 
-Pokemon1_attack_button2= tk.Button(Showdown, text= f"{actingpokemon1[playeronepokemon].moves[2].name}", command= lambda: attack_(actingpokemon1[playeronepokemon],actingpokemon2[playertwopokemon],2))
+Pokemon1_attack_button2= ttk.Button(Showdown, text= f"{actingpokemon1[playeronepokemon].moves[2].name}", command= lambda: attack_(actingpokemon1[playeronepokemon],actingpokemon2[playertwopokemon],2))
 Pokemon1_attack_button2.grid(column=0, row=3, sticky=tk.W, padx=1, pady=1)
 
-Pokemon1_attack_button3= tk.Button(Showdown, text= f"{actingpokemon1[playeronepokemon].moves[3].name}", command= lambda: attack_(actingpokemon1[playeronepokemon],actingpokemon2[playertwopokemon],3))
+Pokemon1_attack_button3= ttk.Button(Showdown, text= f"{actingpokemon1[playeronepokemon].moves[3].name}", command= lambda: attack_(actingpokemon1[playeronepokemon],actingpokemon2[playertwopokemon],3))
 Pokemon1_attack_button3.grid(column=0, row=4, sticky=tk.W, padx=1, pady=1)
 
-Pokemon2_attack_button= tk.Button(Showdown, text= f"{actingpokemon2[playertwopokemon].moves[0].name}", command= lambda: attack_(actingpokemon2[playertwopokemon],actingpokemon1[playeronepokemon],0))
+Pokemon2_attack_button= ttk.Button(Showdown, text= f"{actingpokemon2[playertwopokemon].moves[0].name}", command= lambda: attack_(actingpokemon2[playertwopokemon],actingpokemon1[playeronepokemon],0))
 Pokemon2_attack_button.grid(column= 2, row= 3, sticky=tk.W, padx=1, pady=1)
 
-Pokemon2_attack_button2= tk.Button(Showdown, text= f"{actingpokemon2[playertwopokemon].moves[1].name}", command= lambda: attack_(actingpokemon2[playertwopokemon],actingpokemon1[playeronepokemon],1))
+Pokemon2_attack_button2= ttk.Button(Showdown, text= f"{actingpokemon2[playertwopokemon].moves[1].name}", command= lambda: attack_(actingpokemon2[playertwopokemon],actingpokemon1[playeronepokemon],1))
 Pokemon2_attack_button2.grid(column= 3, row= 3, sticky=tk.W, padx=1, pady=1)
 
-Pokemon2_attack_button3= tk.Button(Showdown, text= f"{actingpokemon2[playertwopokemon].moves[2].name}", command= lambda: attack_(actingpokemon2[playertwopokemon],actingpokemon1[playeronepokemon],2))
+Pokemon2_attack_button3= ttk.Button(Showdown, text= f"{actingpokemon2[playertwopokemon].moves[2].name}", command= lambda: attack_(actingpokemon2[playertwopokemon],actingpokemon1[playeronepokemon],2))
 Pokemon2_attack_button3.grid(column= 2, row= 4, sticky=tk.W, padx=1, pady=1)
 
-Pokemon2_attack_button4= tk.Button(Showdown, text= f"{actingpokemon2[playertwopokemon].moves[3].name}", command= lambda: attack_(actingpokemon2[playertwopokemon],actingpokemon1[playeronepokemon],3))
+Pokemon2_attack_button4= ttk.Button(Showdown, text= f"{actingpokemon2[playertwopokemon].moves[3].name}", command= lambda: attack_(actingpokemon2[playertwopokemon],actingpokemon1[playeronepokemon],3))
 Pokemon2_attack_button4.grid(column= 3, row= 4, sticky=tk.W, padx=1, pady=1)
 
 def Turnmovedisable():
