@@ -5,8 +5,6 @@ import os
 
 assetpath = f"{os.path.dirname(__file__)}\\Assets"
 
-#TODO fix type immunity
-
 #all type advantages
 Typeadvantage = {
     #defender    attacker
@@ -112,10 +110,10 @@ def attack_(self, other, movenumber):
 
     self.moves[movenumber].pp -= 1
     
-    if playertwopokemon == 3 and actingpokemon2[playertwopokemon].hp == 0:
+    if actingpokemon2[len(actingpokemon2)-1].hp == 0:
         win(playerone)
     else:
-        if playeronepokemon == 3 and actingpokemon1[playeronepokemon].hp == 0:
+        if actingpokemon1[len(actingpokemon1)-1].hp == 0:
             win(playertwo)
         else:
             deathswitch()
@@ -230,6 +228,8 @@ Sludgewave = Attacks("poison", 95, 100, 16, True, "Sludge wave")
 Earthpower = Attacks("ground", 90, 100, 16, False, "Earth power")
 Thunderbolt = Attacks("electric", 90, 100, 24, True, "Thunderbolt")
 Firepunch = Attacks("fire", 75, 100, 15, False, "Fire punch")
+Thunderpunch = Attacks("electric", 75, 100, 15, False, "Thunder punch")
+Icepunch = Attacks("ice", 75, 100, 15, False, "Ice punch")
 Flamethrower = Attacks("fire", 90, 100, 15, True, "Flamethrower")
 Bravebird = Attacks("flying", 120, 100, 15, False, "Brave bird")
 Hurricane = Attacks("flying", 110, 70, 16, True, "Hurricane")
@@ -243,6 +243,9 @@ StoneEdge = Attacks("rock", 100, 80, 5, False, "Stone Edge")
 AquaJet = Attacks("water", 40, 100, 20, False, "Aqua Jet")
 FreezDry = Attacks("ice", 70, 100, 20, True, "Freeze-dry")
 Moonblast = Attacks("fairy", 95, 100, 15, True, "Moon blast")
+Psyshock = Attacks("psychic", 80, 100, 10, True, "Psyshock")
+Spiritbreak = Attacks("fairy", 75, 100, 15, True, "Spirit Break")
+Suckerpunch = Attacks("dark", 70, 100, 5, False, "Sucker Punch")
 
 Showdown = tk.Tk()
 Showdown.title("Pykemon")
@@ -258,6 +261,10 @@ Aegislash_sprite = tk.PhotoImage(file=f"{assetpath}\\aegislash.png")
 Steelix_sprite = tk.PhotoImage(file=f"{assetpath}\\Steelix.png")
 Carracosta_sprite = tk.PhotoImage(file=f"{assetpath}\\Carracosta.png")
 Ninetalesalola_sprite = tk.PhotoImage(file=f"{assetpath}\\Ninetales_alola.png")
+Bibarel_sprite = tk.PhotoImage(file=f"{assetpath}\\Bibarel.png")
+Hitmonchan_sprite = tk.PhotoImage(file=f"{assetpath}\\Hitmonchan.png")
+Reuniclus_sprite = tk.PhotoImage(file=f"{assetpath}\\Reuniclus.png")
+Grimmsnarl_sptite = tk.PhotoImage(file=f"{assetpath}\\Grimsnarl.png")
 
 Mewtwo = Pokemon("psychic", " ", 109, 110, 90, 154, 90, "Mewtwo", [Psystrike, Icebeam, Fireblast, Shadowball], Mewtwo_sprite)
 Nidoking = Pokemon("poison","ground", 81, 102, 77, 85, 75, "Nidoking", [Sludgewave, Earthpower, Fireblast, Thunderbolt], Nidoking_sprite)
@@ -267,9 +274,13 @@ Aegislash = Pokemon("steel", "ghost", 60, 70, 70, 70, 70, "Aegislash", [Shadowba
 Steelix = Pokemon("steel", "ground", 75, 85, 200, 55, 65, "Steelix", [Earthpower, Earthquake, Steelbeam, Flashcannon], Steelix_sprite)
 Carracosta = Pokemon("water", "rock", 75, 108, 133, 83, 65, "Carracosta", [StoneEdge, AquaJet, Earthquake, Icebeam], Carracosta_sprite)
 Ninetalesalola = Pokemon("ice", "fairy", 73, 67, 75, 81, 100, "Ninetails", [Icebeam, FreezDry, Moonblast, Extremespeed], Ninetalesalola_sprite)
+Bibarel = Pokemon("normal", "water", 120, 120, 120, 120, 120, "Bibarel", [Extremespeed, AquaJet, Firepunch, Closecombat], Bibarel_sprite)
+Hitmonchan = Pokemon("fighing", " ", 50, 105, 79, 35, 110, "Hitmonchan", [Firepunch, Icepunch, Thunderpunch, Closecombat], Hitmonchan_sprite)
+Reuniclus = Pokemon("psychic", " ", 110, 65, 75, 125, 85, "Reuniclus", [Psyshock, Shadowball, Moonblast, AquaJet], Reuniclus_sprite)
+Grimmsnarl = Pokemon("dark", "fairy", 95, 120, 65, 95, 75, "Grimmsnarl", [Shadowball, Spiritbreak, Suckerpunch, Moonblast], Grimmsnarl_sptite)
 
-actingpokemon1 = [Mewtwo, Moltres, Steelix, Ninetalesalola]
-actingpokemon2 = [Nidoking, Dragonite, Aegislash, Carracosta]
+actingpokemon1 = [Mewtwo, Moltres, Steelix, Ninetalesalola, Hitmonchan, Grimmsnarl]
+actingpokemon2 = [Nidoking, Dragonite, Aegislash, Carracosta, Bibarel, Reuniclus]
 
 Hpdisplay1 = ttk.Label(Showdown, text=f"{actingpokemon1[playeronepokemon].hp}")
 Hpdisplay1.grid(column=0, row=1, sticky=tk.W, padx=10, pady=1)
@@ -403,7 +414,7 @@ def Turnmovedisable():
 Turnmovedisable()
 
 window_width = 500
-window_height = 500
+window_height = 230
 
 Showdown.columnconfigure(0, weight=1)
 Showdown.columnconfigure(1, weight=3)
