@@ -1,6 +1,6 @@
 # Pokemon in python
 
-A simple (when i say simple i don't quite mean that) pokemon battler that uses tkinter
+A simple (when i say simple i don't quite mean that) pokemon battler that uses tkinter (so you will need it and ttk)
 
 Some of the fuctionalty of pokemon that was removed was switching outside of when you faint, speed and by proxy priorty calulation.
 
